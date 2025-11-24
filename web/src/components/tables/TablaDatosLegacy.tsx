@@ -219,14 +219,29 @@ export function TablaDatosLegacy<TData extends RowData>({
                       className={`px-3 py-3 text-sm border-b border-r relative border-gray-200 whitespace-nowrap `}
                     >
                       {/*@ts-ignore */}
-                      {row.original.resaltarFila && row.original?.resaltarFila.active != undefined
+                      {/* {row.original.resaltarFila && row.original?.resaltarFila.active != undefined
                         ? row.original?.resaltarFila?.active && (
                             <span className="absolute block w-2 h-2 rounded-full cursor-pointer group bg-primary-main top-1 right-1 z-10">
                               <ul className="absolute top-0 hidden text-white-main w-fit px-3 py-2 shadow-md left-[calc(100%+2px)] group-hover:block rounded  bg-secondary-main">
-                                {/*@ts-ignore */}
                                 {row.original?.resaltarFila.data.map((item: any, index: number) => (
                                   <li key={`resaltaFila${index}`}>{item.label}</li>
                                 ))}
+                              </ul>
+                            </span>
+                          )
+                        : null} */}
+
+                      {/*@ts-ignore */}
+                      {(row.original as any)?.resaltarFila &&
+                      (row.original as any)?.resaltarFila.active != undefined
+                        ? (row.original as any)?.resaltarFila?.active && (
+                            <span className="absolute block w-2 h-2 rounded-full cursor-pointer group bg-primary-main top-1 right-1 z-10">
+                              <ul className="absolute top-0 hidden text-white-main w-fit px-3 py-2 shadow-md left-[calc(100%+2px)] group-hover:block rounded bg-secondary-main">
+                                {(row.original as any)?.resaltarFila?.data.map(
+                                  (item: any, index: number) => (
+                                    <li key={`resaltaFila${index}`}>{item.label}</li>
+                                  )
+                                )}
                               </ul>
                             </span>
                           )
