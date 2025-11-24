@@ -1,0 +1,17 @@
+export interface ColumnasDataFacturacionApi {
+  id: number,
+  cliente: string,
+  documento: string,
+  unit: number,
+  glosa: string,
+  op: number,
+  tipo: string,
+  accion: string,
+  monto: number,
+  tc: number,
+  entrega: number,
+  m1: string,
+  recibe: number,
+  m2: string,
+  fecha: string,
+}
