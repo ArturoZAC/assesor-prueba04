@@ -22,6 +22,7 @@ app.use(
       "https://sistema.assessorperu.com",
       "http://localhost:3000",
       "http://localhost:5173",
+      "https://assesor-prueba04.onrender.com",
     ],
     credentials: true,
   })
