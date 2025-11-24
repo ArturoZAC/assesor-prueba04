@@ -23,6 +23,7 @@ app.use(
       "http://localhost:3000",
       "http://localhost:5173",
       // "https://assesor-prueba04.onrender.com",
+      "https://assesor-prueba04.vercel.app",
     ],
     credentials: true,
   })
