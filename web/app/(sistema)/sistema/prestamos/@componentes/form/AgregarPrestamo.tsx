@@ -1,11 +1,5 @@
 "use client";
-<<<<<<< HEAD
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-=======
- 
-
->>>>>>> diego
 import { useAuth } from "@/context/useAuthContext";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
@@ -333,11 +327,7 @@ export default function AgregarPrestamo() {
 
               <Errors errors={errors.factura} touched={touched.factura} />
             </div>
-<<<<<<< HEAD
-            <div className="w-full flex flex-col gap-2 items-start">
-=======
             <div className="flex flex-col items-start w-full gap-2">
->>>>>>> diego
               <label className="text-black-800">Es Antiguo?</label>
               <input
                 type="checkbox"
