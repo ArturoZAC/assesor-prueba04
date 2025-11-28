@@ -3,10 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts --ignore src/estado-metodo.json",
+    "dev": "nodemon",
     "build": "tsc",
     "start": "node dist/src/index.js",
     "migrate": "npx prisma migrate dev"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "src/utils/scraperKeys.json",
+      "src/utils/scraperKeys.backup.json"
+    ]
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

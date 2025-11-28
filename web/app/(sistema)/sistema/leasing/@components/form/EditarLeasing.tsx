@@ -1,5 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+<<<<<<< HEAD
 /* eslint-disable @typescript-eslint/no-explicit-any */
+=======
+ 
+>>>>>>> diego
 "use client";
 
 import { config } from "@/config/config";
@@ -24,7 +28,10 @@ export default function EditarLeasing() {
   const searchParams = useSearchParams();
   const [usuario, setUsuario] = useState<any>(null);
 
+<<<<<<< HEAD
   console.log(selectedRow);
+=======
+>>>>>>> diego
 
   async function editarLeasing(): Promise<void> {
     setLoading(true);
@@ -33,7 +40,11 @@ export default function EditarLeasing() {
         `${config.apiUrl}/leasing/${selectedRow.id}`,
         {
           ...values,
+<<<<<<< HEAD
           usuarioId: selectedRow.usuarioId,
+=======
+          usuarioId: usuario.id,
+>>>>>>> diego
         },
         {
           withCredentials: true,
@@ -64,7 +75,10 @@ export default function EditarLeasing() {
       const response = await axios.get(
         `${config.apiUrl}/user/cliente/${selectedRow.usuarioId}`
       );
+<<<<<<< HEAD
       console.log(response.data);
+=======
+>>>>>>> diego
       setUsuario(response.data.usuario);
     } catch (error) {
       console.error("Error buscando clientes:", error);

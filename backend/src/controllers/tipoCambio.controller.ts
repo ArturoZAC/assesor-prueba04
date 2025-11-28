@@ -7,7 +7,7 @@ import { Prisma } from "@prisma/client";
 
 import { Response, Request } from "express";
 import prisma from "../config/database";
-import { obtenerApiKeyDisponible } from "../utils/obtenerApiKeyDisponible";
+import { obtenerApiKeyDisponible, rotarKey } from "../utils/obtenerApiKeyDisponible";
 
 const estadoPath = path.join(__dirname, "../estado-metodo.json");
 
@@ -24,26 +24,20 @@ export const obtenerTipoCambioConPuppeteer = async () => {
   const page = await browser.newPage();
 
   await page.setUserAgent(randomUserAgent());
-  await page.goto(
-    "https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true",
-    {
-      waitUntil: "networkidle2",
-    }
-  );
+  await page.goto("https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true", {
+    waitUntil: "networkidle2",
+  });
 
   // Aquí replicamos tu lógica para encontrar el `sized-price` con clase "extraLarge"
-  const price = await page.$$eval(
-    '[data-component="sized-price"]',
-    (elements) => {
-      for (const el of elements) {
-        const className = el.getAttribute("class") || "";
-        if (className.includes("extraLarge")) {
-          return el.textContent?.trim() || null;
-        }
+  const price = await page.$$eval('[data-component="sized-price"]', (elements) => {
+    for (const el of elements) {
+      const className = el.getAttribute("class") || "";
+      if (className.includes("extraLarge")) {
+        return el.textContent?.trim() || null;
       }
-      return null;
     }
-  );
+    return null;
+  });
 
   await browser.close();
 
@@ -71,62 +65,105 @@ export const obtenerTipoCambioConPuppeteer = async () => {
 //   return proxies[Math.floor(Math.random() * proxies.length)];
 // }
 
-const randomUserAgent = () =>
-  userAgents[Math.floor(Math.random() * userAgents.length)];
+const randomUserAgent = () => userAgents[Math.floor(Math.random() * userAgents.length)];
 
-export const obtenerTipoCambio = async () => {
-  const url =
-    "https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true";
+const MAX_REINTENTOS = 3;
+const TIMEOUT_MS = 15000;
 
-    const apiKey = obtenerApiKeyDisponible();
+export const obtenerTipoCambio = async (): Promise<{
+  fecha: string;
+  precioCompra: number;
+  precioVenta: number;
+  moneda: string;
+}> => {
+  const url = "https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true";
 
-  try {
-    console.log("🔁 Enviando solicitud a ScraperAPI...");
+  let ultimoError: Error | null = null;
+  let keyActual = obtenerApiKeyDisponible();
 
-    const scraperUrl = `https://api.scraperapi.com/?api_key=${apiKey}&url=${encodeURIComponent(
-      url
-    )}`;
+  // Intentar con diferentes keys si es necesario
+  for (let intento = 1; intento <= MAX_REINTENTOS; intento++) {
+    try {
+      console.log(`🔁 Intento ${intento}/${MAX_REINTENTOS} con ScraperAPI...`);
 
-    // Realiza la solicitud a ScraperAPI
-    const response = await fetch(scraperUrl);
-    const body = await response.text();
+      const scraperUrl = `https://api.scraperapi.com/?api_key=${keyActual}&url=${encodeURIComponent(
+        url
+      )}&keep_headers=true`;
 
-    if (!response.ok) {
-      throw new Error("Error al obtener los datos de ScraperAPI");
-    }
+      // Fetch con timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
-    // Si todo va bien, ahora procesamos el HTML usando cheerio
-    const $ = cheerio.load(body);
-    const priceElements = $('[data-component="sized-price"]');
+      const response = await fetch(scraperUrl, {
+        signal: controller.signal,
+      });
 
-    let price: string | null = null;
+      clearTimeout(timeoutId);
 
-    priceElements.each((_, el): any => {
-      const className = $(el).attr("class") || "";
-      if (className.includes("extraLarge")) {
-        price = $(el).text().trim();
-        return false;
+      // Verificar respuesta
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-    });
 
-    if (!price) {
-      throw new Error(
-        "Precio no encontrado. Puede que Bloomberg cargue con JS."
-      );
+      const body = await response.text();
+
+      // Validar que no sea una respuesta vacía
+      if (!body || body.length < 100) {
+        throw new Error("Respuesta vacía o muy corta de ScraperAPI");
+      }
+
+      // Parsear HTML con cheerio
+      const $ = cheerio.load(body);
+      const priceElements = $('[data-component="sized-price"]');
+
+      let price: string | null = null;
+
+      priceElements.each((_, el): any => {
+        const className = $(el).attr("class") || "";
+        if (className.includes("extraLarge")) {
+          price = $(el).text().trim();
+          return false;
+        }
+      });
+
+      if (!price) {
+        throw new Error("Precio no encontrado en HTML. Selector puede haber cambiado.");
+      }
+
+      const parsedPrice = parseFloat(price);
+
+      if (isNaN(parsedPrice) || parsedPrice <= 0) {
+        throw new Error(`Precio inválido parseado: ${price}`);
+      }
+
+      console.log(`✅ Precio obtenido: ${parsedPrice} USD/PEN`);
+
+      return {
+        fecha: new Date().toISOString(),
+        precioCompra: parsedPrice,
+        precioVenta: parsedPrice,
+        moneda: "USD/PEN",
+      };
+    } catch (error: any) {
+      ultimoError = error;
+      console.warn(`⚠️ Intento ${intento} falló: ${error.message}`);
+
+      // Si falla, rotar a siguiente key
+      if (intento < MAX_REINTENTOS) {
+        console.log("🔄 Rotando a siguiente API key...");
+        keyActual = rotarKey(keyActual, true);
+
+        // Esperar antes de reintentar
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
     }
-
-    const parsedPrice = parseFloat(price);
-    console.log("PRECIO: ", parsedPrice);
-    return {
-      fecha: new Date().toISOString(),
-      precioCompra: parsedPrice,
-      precioVenta: parsedPrice,
-      moneda: "USD/PEN",
-    };
-  } catch (error: any) {
-    console.warn(`⚠️ Error: ${error.message}`);
-    throw new Error(`Error scraping Bloomberg: ${error.message}`);
   }
+
+  // Si todos los intentos fallan, lanzar error
+  console.error("❌ CRÍTICO: Todos los intentos fallaron");
+  throw new Error(
+    `No se pudo obtener tipo de cambio después de ${MAX_REINTENTOS} intentos: ${ultimoError?.message}`
+  );
 };
 
 export const traerTipoCambio = async (req: Request, res: Response) => {
@@ -174,8 +211,7 @@ export const traerPrecios = async (req: any, res: any) => {
 
 export const actualizarTipoCambio = async (req: any, res: any) => {
   try {
-    const { intervaloCompra, intervaloVenta, precioCompra, precioVenta } =
-      req.body;
+    const { intervaloCompra, intervaloVenta, precioCompra, precioVenta } = req.body;
 
     const tipoCambio = await prisma.tipoCambio.update({
       where: { id: 1 },
@@ -221,11 +257,7 @@ export const traerTipoCambioBackend = async () => {
   }
 };
 
-export const actualizarMiddlePriceBackend = async ({
-  middlePrice,
-}: {
-  middlePrice: any;
-}) => {
+export const actualizarMiddlePriceBackend = async ({ middlePrice }: { middlePrice: any }) => {
   try {
     const tipoCambio = await prisma.tipoCambio.update({
       where: { id: 1 },
@@ -291,11 +323,7 @@ const leerMetodoActual = (): "axios" | "puppeteer" => {
 };
 
 const guardarMetodo = (metodo: "axios" | "puppeteer") => {
-  fs.writeFileSync(
-    estadoPath,
-    JSON.stringify({ ultimoMetodo: metodo }),
-    "utf-8"
-  );
+  fs.writeFileSync(estadoPath, JSON.stringify({ ultimoMetodo: metodo }), "utf-8");
 };
 
 export const obtenerTipoCambioAlternado = async () => {
@@ -320,9 +348,7 @@ export const obtenerTipoCambioAlternado = async () => {
 
     // Intenta el otro como respaldo
     const fallbackMetodo = metodo === "axios" ? "puppeteer" : "axios";
-    console.log(
-      `🔄 Intentando con método alternativo: ${fallbackMetodo.toUpperCase()}`
-    );
+    console.log(`🔄 Intentando con método alternativo: ${fallbackMetodo.toUpperCase()}`);
 
     try {
       const fallbackResultado =

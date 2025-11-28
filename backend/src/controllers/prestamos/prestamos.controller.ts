@@ -426,7 +426,12 @@ export async function editarPrestamo(req: Request, res: Response): Promise<any |
 export const obtenerTotalCapitalPorMes = async (req: Request, res: Response) => {
   try {
     const totalesPorMesDB = await prisma.$queryRaw<
-      { month: number; year: number; totalSoles: number | null; totalDolares: number | null }[]
+      {
+        month: number;
+        year: number;
+        totalSoles: number | null;
+        totalDolares: number | null;
+      }[]
     >`
       SELECT
         MONTH(createdAt) AS month,
@@ -590,11 +595,11 @@ export async function exportarExcelPrestamos(
       `${prestamo.usuario.nombres} ${prestamo.usuario.apellido_paterno} ${prestamo.usuario.apellido_materno}`,
       prestamo.usuario.tipo_documento,
       prestamo.usuario.documento,
-      prestamo.capital_soles?.toNumber() ?? "", // Usa '' si es nulo y convierte Decimal a number
+      prestamo.capital_soles?.toNumber() ?? "",
       prestamo.capital_dolares?.toNumber() ?? "",
       prestamo.moneda,
       prestamo.tasa,
-      prestamo.devolucion,
+      prestamo.devolucion.toISOString().split("T")[0], // AQUÍ: Formato de fecha
       prestamo.dias,
       prestamo.estatus,
       prestamo.interes.toNumber(),
@@ -633,7 +638,6 @@ export async function exportarExcelPrestamos(
     prisma.$disconnect();
   }
 }
-
 export async function getTotal(req: Request, res: Response): Promise<any | undefined> {
   let year: number;
 
@@ -676,7 +680,7 @@ export async function getTotal(req: Request, res: Response): Promise<any | undef
           //   gte: startDate,
           //   lte: endDate,
           // },
-          fechaInicial: {
+          devolucion: {
             gte: startDate,
             lte: endDate,
           },
@@ -771,7 +775,9 @@ export async function getTotal(req: Request, res: Response): Promise<any | undef
 
       const promedioTc = cantidadTcNoCero > 0 ? sumaTcNoCero / cantidadTcNoCero : 0;
 
-      const monthName = new Intl.DateTimeFormat("es-PE", { month: "long" }).format(startDate);
+      const monthName = new Intl.DateTimeFormat("es-PE", {
+        month: "long",
+      }).format(startDate);
 
       if (cantidadTcNoCero > 0) {
         accumulatedSumaTcNoCero += sumaTcNoCero;
@@ -840,9 +846,9 @@ export async function getTotal(req: Request, res: Response): Promise<any | undef
     res.status(200).json([...monthlyTotals, accumulatedObject]);
   } catch (error) {
     console.error(`Error fetching monthly totals for year ${year} with accumulated:`, error);
-    res
-      .status(500)
-      .json({ error: `Failed to fetch monthly totals for year ${year} with accumulated` });
+    res.status(500).json({
+      error: `Failed to fetch monthly totals for year ${year} with accumulated`,
+    });
   } finally {
     await prisma.$disconnect();
   }
@@ -926,7 +932,9 @@ export async function getTotalPrestamosFLUJO(yearParam: string): Promise<any | u
         sumOfRates += prestamo.tasa;
       });
 
-      const monthName = new Intl.DateTimeFormat("es-PE", { month: "long" }).format(startDate);
+      const monthName = new Intl.DateTimeFormat("es-PE", {
+        month: "long",
+      }).format(startDate);
 
       monthlyTotals.push({
         fecha: `${monthName} ${year}`,

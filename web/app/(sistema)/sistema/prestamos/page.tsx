@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 /* eslint-disable @typescript-eslint/no-explicit-any */
+=======
+>>>>>>> diego
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from "react";
 import { config } from "@/config/config";
@@ -13,6 +16,7 @@ export default async function page({ searchParams }: { searchParams: any }) {
   const limit = 10;
   const pageParam = searchParams?.page;
 
+<<<<<<< HEAD
   const page = parseInt(Array.isArray(pageParam) ? pageParam[0] : pageParam ?? "1");
   const safePage = isNaN(page) || page < 1 ? 1 : page;
 
@@ -20,6 +24,21 @@ export default async function page({ searchParams }: { searchParams: any }) {
   const fecha = typeof searchParams.fecha === "string" ? searchParams.fecha : "";
   const estado = typeof searchParams.estado === "string" ? searchParams.estado : "";
   const moneda = typeof searchParams.moneda === "string" ? searchParams.moneda : "";
+=======
+  const page = parseInt(
+    Array.isArray(pageParam) ? pageParam[0] : pageParam ?? "1"
+  );
+  const safePage = isNaN(page) || page < 1 ? 1 : page;
+
+  const search =
+    typeof searchParams.search === "string" ? searchParams.search : "";
+  const fecha =
+    typeof searchParams.fecha === "string" ? searchParams.fecha : "";
+  const estado =
+    typeof searchParams.estado === "string" ? searchParams.estado : "";
+  const moneda =
+    typeof searchParams.moneda === "string" ? searchParams.moneda : "";
+>>>>>>> diego
   console.log(`${config.apiUrl}/prestamos`);
   const res = await fetch(
     `${config.apiUrl}/prestamos?page=${safePage}
@@ -36,11 +55,17 @@ export default async function page({ searchParams }: { searchParams: any }) {
   );
 
   const { data, pagination } = await res.json();
+<<<<<<< HEAD
   console.log({ data });
 
   const datos = adaptarPrestamos(data);
 
   // console.log({ datos });
+=======
+
+  const datos = adaptarPrestamos(data);
+
+>>>>>>> diego
 
   const filtros = [
     {

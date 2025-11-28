@@ -1,59 +1,182 @@
-[2025-04-11T16:40:03.037Z] [object Object]
-[2025-04-11T16:44:01.952Z] [object Object]
-[2025-04-11T16:52:04.367Z] [object Object]
-[2025-04-11T17:00:02.515Z] [object Object]
-[2025-04-11T17:04:02.644Z] [object Object]
-[2025-04-11T17:12:04.210Z] [object Object]
-[2025-04-11T17:40:21.365Z] [object Object]
-[2025-04-11T17:48:19.466Z] [object Object]
-[2025-04-11T17:53:02.063Z] [object Object]
-[2025-04-11T17:57:01.083Z] [object Object]
-[2025-04-11T18:01:01.362Z] [object Object]
-[2025-04-11T18:05:01.343Z] [object Object]
-[2025-04-11T18:09:01.313Z] [object Object]
-[2025-04-11T18:13:00.874Z] [object Object]
-[2025-04-11T18:17:01.746Z] [object Object]
-[2025-04-11T18:21:01.743Z] [object Object]
-[2025-04-11T18:25:00.415Z] [object Object]
-[2025-04-11T18:29:00.082Z] [object Object]
-[2025-04-11T18:53:00.910Z] [object Object]
-[2025-04-11T18:57:01.169Z] [object Object]
-[2025-04-11T19:01:00.254Z] [object Object]
-[2025-04-11T19:05:00.581Z] [object Object]
-[2025-04-11T19:13:00.265Z] [object Object]
-[2025-04-11T19:20:03.060Z] [object Object]
-[2025-04-11T19:21:00.993Z] [object Object]
-[2025-04-11T19:24:04.189Z] [object Object]
-[2025-04-11T19:25:00.170Z] [object Object]
-[2025-04-11T19:28:03.192Z] [object Object]
-[2025-04-11T19:29:00.197Z] [object Object]
-[2025-04-11T19:32:04.204Z] [object Object]
-[2025-04-11T19:33:01.916Z] [object Object]
-[2025-04-11T19:36:02.939Z] [object Object]
-[2025-04-11T19:37:02.583Z] [object Object]
-[2025-04-11T19:44:04.435Z] [object Object]
-[2025-04-11T19:44:19.704Z] [object Object]
-[2025-04-11T19:53:00.606Z] [object Object]
-[2025-04-11T19:57:01.315Z] [object Object]
-[2025-04-11T20:00:21.450Z] [object Object]
-[2025-04-11T20:05:11.780Z] [object Object]
-[2025-04-11T20:13:19.566Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T20:13:19.566Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T20:17:32.838Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T20:17:32.837Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T20:21:33.665Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T20:21:33.665Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T20:25:37.070Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T20:25:37.070Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T20:29:35.157Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T20:29:35.157Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T20:33:24.257Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T20:33:24.257Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T20:37:39.548Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T20:37:39.548Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T20:41:27.807Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T20:41:27.807Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T20:50:13.731Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T20:50:13.731Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T20:54:13.436Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T20:54:13.436Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T20:58:06.872Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T20:58:06.872Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T21:01:46.681Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T21:01:46.681Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T21:05:48.022Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T21:05:48.022Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T21:13:28.899Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T21:13:28.898Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T21:17:47.694Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T21:17:47.694Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T21:21:37.863Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T21:21:37.863Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T21:25:40.322Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T21:25:40.322Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T21:29:17.181Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T21:29:17.181Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T21:33:26.249Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T21:33:26.249Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
-[2025-04-11T21:37:36.556Z] {"message":"Todos los proxies fallaron","timestamp":"2025-04-11T21:37:36.556Z","url":"https://www.bloomberg.com/quote/USDPEN:CUR?embedded-checkout=true"}
+[2025-10-02T20:10:10.880Z] Iniciando exportación de préstamos. Filtros recibidos => nombre: -, moneda: -, estado: -
+[2025-10-02T20:10:10.880Z] Condiciones de búsqueda generadas: {}
+[2025-10-02T20:10:10.900Z] Se encontraron 85 préstamos
+[2025-10-02T20:10:10.901Z] Prestamo 1 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:10:10.902Z] Prestamo 2 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:10:10.902Z] Prestamo 3 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:10:10.903Z] Prestamo 4 -> tipo_documento: DNI, documento: 20605719041
+[2025-10-02T20:10:10.903Z] Prestamo 5 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.904Z] Prestamo 6 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.904Z] Prestamo 7 -> tipo_documento: DNI, documento: 20492004392
+[2025-10-02T20:10:10.905Z] Prestamo 8 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.905Z] Prestamo 9 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.905Z] Prestamo 10 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.906Z] Prestamo 11 -> tipo_documento: DNI, documento: 20605719041
+[2025-10-02T20:10:10.906Z] Prestamo 12 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.906Z] Prestamo 13 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.907Z] Prestamo 14 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:10:10.907Z] Prestamo 15 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.907Z] Prestamo 16 -> tipo_documento: DNI, documento: 20602080898
+[2025-10-02T20:10:10.907Z] Prestamo 17 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.908Z] Prestamo 22 -> tipo_documento: DNI, documento: 9587092
+[2025-10-02T20:10:10.908Z] Prestamo 23 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.908Z] Prestamo 24 -> tipo_documento: DNI, documento: 20605719041
+[2025-10-02T20:10:10.909Z] Prestamo 25 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:10:10.909Z] Prestamo 26 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.909Z] Prestamo 27 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.909Z] Prestamo 28 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.910Z] Prestamo 29 -> tipo_documento: DNI, documento: 20492004392
+[2025-10-02T20:10:10.910Z] Prestamo 30 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.910Z] Prestamo 31 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.910Z] Prestamo 38 -> tipo_documento: DNI, documento: 45406919
+[2025-10-02T20:10:10.911Z] Prestamo 39 -> tipo_documento: DNI, documento: 20602080898
+[2025-10-02T20:10:10.911Z] Prestamo 40 -> tipo_documento: DNI, documento: 9678191
+[2025-10-02T20:10:10.911Z] Prestamo 41 -> tipo_documento: DNI, documento: 20601734363
+[2025-10-02T20:10:10.911Z] Prestamo 42 -> tipo_documento: DNI, documento: 20601734363
+[2025-10-02T20:10:10.912Z] Prestamo 43 -> tipo_documento: DNI, documento: 29627189
+[2025-10-02T20:10:10.913Z] Prestamo 44 -> tipo_documento: DNI , documento: 70572026
+[2025-10-02T20:10:10.913Z] Prestamo 45 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.913Z] Prestamo 46 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.914Z] Prestamo 47 -> tipo_documento: DNI , documento: 70572026
+[2025-10-02T20:10:10.914Z] Prestamo 48 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.914Z] Prestamo 49 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.915Z] Prestamo 50 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.915Z] Prestamo 51 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.915Z] Prestamo 52 -> tipo_documento: DNI, documento: 20605515887
+[2025-10-02T20:10:10.915Z] Prestamo 53 -> tipo_documento: DNI, documento: 10102213241
+[2025-10-02T20:10:10.916Z] Prestamo 54 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.916Z] Prestamo 55 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.916Z] Prestamo 56 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.917Z] Prestamo 57 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.917Z] Prestamo 58 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.917Z] Prestamo 59 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.918Z] Prestamo 60 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.918Z] Prestamo 61 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.918Z] Prestamo 62 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:10:10.918Z] Prestamo 63 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.919Z] Prestamo 64 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.919Z] Prestamo 65 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:10:10.919Z] Prestamo 66 -> tipo_documento: DNI , documento: 70572026
+[2025-10-02T20:10:10.920Z] Prestamo 67 -> tipo_documento: DNI, documento: 20601734363
+[2025-10-02T20:10:10.920Z] Prestamo 68 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.920Z] Prestamo 69 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.921Z] Prestamo 70 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:10:10.921Z] Prestamo 71 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:10:10.921Z] Prestamo 72 -> tipo_documento: ce, documento: 20610591613
+[2025-10-02T20:10:10.922Z] Prestamo 73 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.922Z] Prestamo 74 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.922Z] Prestamo 75 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:10:10.923Z] Prestamo 76 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.923Z] Prestamo 77 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.923Z] Prestamo 78 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:10:10.924Z] Prestamo 79 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.924Z] Prestamo 80 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.924Z] Prestamo 81 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:10:10.924Z] Prestamo 82 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:10:10.925Z] Prestamo 83 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:10:10.925Z] Prestamo 84 -> tipo_documento: DNI , documento: 70572026
+[2025-10-02T20:10:10.925Z] Prestamo 85 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:10:10.926Z] Prestamo 86 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:10:10.926Z] Prestamo 87 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:10:10.926Z] Prestamo 88 -> tipo_documento: DNI , documento: 70572026
+[2025-10-02T20:10:10.927Z] Prestamo 89 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:10:10.927Z] Prestamo 90 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:10:10.927Z] Prestamo 91 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:10:10.927Z] Prestamo 92 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:10:10.928Z] Prestamo 93 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:10:10.928Z] Prestamo 94 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:10:10.928Z] Prestamo 95 -> tipo_documento: DNI , documento: 70572026
+[2025-10-02T20:10:10.957Z] Excel generado con 85 filas
+[2025-10-02T20:10:10.960Z] Exportación completada y enviada al cliente
+[2025-10-02T20:10:10.969Z] Conexión Prisma cerrada
+[2025-10-02T20:17:22.945Z] Iniciando exportación de préstamos. Filtros recibidos => nombre: -, moneda: -, estado: -
+[2025-10-02T20:17:22.945Z] Condiciones de búsqueda generadas: {}
+[2025-10-02T20:17:22.965Z] Se encontraron 85 préstamos
+[2025-10-02T20:17:22.965Z] Prestamo 1 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:17:22.966Z] Prestamo 2 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:17:22.966Z] Prestamo 3 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:17:22.966Z] Prestamo 4 -> tipo_documento: DNI, documento: 20605719041
+[2025-10-02T20:17:22.967Z] Prestamo 5 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.967Z] Prestamo 6 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.967Z] Prestamo 7 -> tipo_documento: DNI, documento: 20492004392
+[2025-10-02T20:17:22.968Z] Prestamo 8 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.968Z] Prestamo 9 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.968Z] Prestamo 10 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.969Z] Prestamo 11 -> tipo_documento: DNI, documento: 20605719041
+[2025-10-02T20:17:22.969Z] Prestamo 12 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.969Z] Prestamo 13 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.969Z] Prestamo 14 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:17:22.970Z] Prestamo 15 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.970Z] Prestamo 16 -> tipo_documento: DNI, documento: 20602080898
+[2025-10-02T20:17:22.970Z] Prestamo 17 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.970Z] Prestamo 22 -> tipo_documento: DNI, documento: 9587092
+[2025-10-02T20:17:22.971Z] Prestamo 23 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.971Z] Prestamo 24 -> tipo_documento: DNI, documento: 20605719041
+[2025-10-02T20:17:22.971Z] Prestamo 25 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:17:22.971Z] Prestamo 26 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.972Z] Prestamo 27 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.972Z] Prestamo 28 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.972Z] Prestamo 29 -> tipo_documento: DNI, documento: 20492004392
+[2025-10-02T20:17:22.972Z] Prestamo 30 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.973Z] Prestamo 31 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.973Z] Prestamo 38 -> tipo_documento: DNI, documento: 45406919
+[2025-10-02T20:17:22.973Z] Prestamo 39 -> tipo_documento: DNI, documento: 20602080898
+[2025-10-02T20:17:22.974Z] Prestamo 40 -> tipo_documento: DNI, documento: 9678191
+[2025-10-02T20:17:22.974Z] Prestamo 41 -> tipo_documento: DNI, documento: 20601734363
+[2025-10-02T20:17:22.974Z] Prestamo 42 -> tipo_documento: DNI, documento: 20601734363
+[2025-10-02T20:17:22.974Z] Prestamo 43 -> tipo_documento: DNI, documento: 29627189
+[2025-10-02T20:17:22.975Z] Prestamo 44 -> tipo_documento: DNI , documento: 70572026
+[2025-10-02T20:17:22.975Z] Prestamo 45 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.975Z] Prestamo 46 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.975Z] Prestamo 47 -> tipo_documento: DNI , documento: 70572026
+[2025-10-02T20:17:22.975Z] Prestamo 48 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.975Z] Prestamo 49 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.976Z] Prestamo 50 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.976Z] Prestamo 51 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.976Z] Prestamo 52 -> tipo_documento: DNI, documento: 20605515887
+[2025-10-02T20:17:22.976Z] Prestamo 53 -> tipo_documento: DNI, documento: 10102213241
+[2025-10-02T20:17:22.976Z] Prestamo 54 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.977Z] Prestamo 55 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.977Z] Prestamo 56 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.977Z] Prestamo 57 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.978Z] Prestamo 58 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.978Z] Prestamo 59 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.978Z] Prestamo 60 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.978Z] Prestamo 61 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.979Z] Prestamo 62 -> tipo_documento: DNI, documento: 20503934885
+[2025-10-02T20:17:22.979Z] Prestamo 63 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.979Z] Prestamo 64 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.979Z] Prestamo 65 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:17:22.980Z] Prestamo 66 -> tipo_documento: DNI , documento: 70572026
+[2025-10-02T20:17:22.980Z] Prestamo 67 -> tipo_documento: DNI, documento: 20601734363
+[2025-10-02T20:17:22.980Z] Prestamo 68 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.980Z] Prestamo 69 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.981Z] Prestamo 70 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:17:22.981Z] Prestamo 71 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:17:22.981Z] Prestamo 72 -> tipo_documento: ce, documento: 20610591613
+[2025-10-02T20:17:22.981Z] Prestamo 73 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.981Z] Prestamo 74 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.982Z] Prestamo 75 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:17:22.982Z] Prestamo 76 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.982Z] Prestamo 77 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.982Z] Prestamo 78 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:17:22.983Z] Prestamo 79 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.983Z] Prestamo 80 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.983Z] Prestamo 81 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:17:22.984Z] Prestamo 82 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:17:22.984Z] Prestamo 83 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:17:22.984Z] Prestamo 84 -> tipo_documento: DNI , documento: 70572026
+[2025-10-02T20:17:22.984Z] Prestamo 85 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:17:22.985Z] Prestamo 86 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:17:22.985Z] Prestamo 87 -> tipo_documento: DNI, documento: 20602013121
+[2025-10-02T20:17:22.985Z] Prestamo 88 -> tipo_documento: DNI , documento: 70572026
+[2025-10-02T20:17:22.985Z] Prestamo 89 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:17:22.985Z] Prestamo 90 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:17:22.985Z] Prestamo 91 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:17:22.986Z] Prestamo 92 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:17:22.986Z] Prestamo 93 -> tipo_documento: DNI, documento: 20607505579
+[2025-10-02T20:17:22.986Z] Prestamo 94 -> tipo_documento: dni, documento: 20604296782
+[2025-10-02T20:17:22.986Z] Prestamo 95 -> tipo_documento: DNI , documento: 70572026
+[2025-10-02T20:17:23.020Z] Excel generado con 85 filas
+[2025-10-02T20:17:23.023Z] Exportación completada y enviada al cliente
+[2025-10-02T20:17:23.039Z] Conexión Prisma cerrada
