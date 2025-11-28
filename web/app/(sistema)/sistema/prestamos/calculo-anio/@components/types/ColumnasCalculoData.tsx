@@ -57,25 +57,13 @@ export const monthlyTotalColumns: ColumnDef<MonthlyTotal>[] = [
     header: "Total Detracción",
     cell: ({ getValue }) => <p>{formatNumberToTwoDecimals(getValue<number>())}</p>,
   },
-<<<<<<< HEAD
-  {
-    accessorKey: "promedioDias",
-    header: "Promedio Días",
-  },
-  {
-    accessorKey: "promedioTasa",
-    header: "Promedio Tasa",
-    cell: ({ getValue }) => <p>{formatNumberToTwoDecimals(getValue<number>())}</p>,
-  },
-=======
-//   {
-//     accessorKey: "promedioDias",
-//     header: "Promedio Días",
-//   },
-//   {
-//     accessorKey: "promedioTasa",
-//     header: "Promedio Tasa",
-//     cell: ({ getValue }) => <p>{formatNumberToTwoDecimals(getValue<number>())}</p>,
-//   },
->>>>>>> diego
+  //   {
+  //     accessorKey: "promedioDias",
+  //     header: "Promedio Días",
+  //   },
+  //   {
+  //     accessorKey: "promedioTasa",
+  //     header: "Promedio Tasa",
+  //     cell: ({ getValue }) => <p>{formatNumberToTwoDecimals(getValue<number>())}</p>,
+  //   },
 ];

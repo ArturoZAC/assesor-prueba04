@@ -1,9 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-<<<<<<< HEAD
-/* eslint-disable @typescript-eslint/no-explicit-any */
-=======
- 
->>>>>>> diego
+
 "use client";
 
 import { config } from "@/config/config";
@@ -28,11 +24,6 @@ export default function EditarLeasing() {
   const searchParams = useSearchParams();
   const [usuario, setUsuario] = useState<any>(null);
 
-<<<<<<< HEAD
-  console.log(selectedRow);
-=======
->>>>>>> diego
-
   async function editarLeasing(): Promise<void> {
     setLoading(true);
     try {
@@ -40,11 +31,7 @@ export default function EditarLeasing() {
         `${config.apiUrl}/leasing/${selectedRow.id}`,
         {
           ...values,
-<<<<<<< HEAD
-          usuarioId: selectedRow.usuarioId,
-=======
           usuarioId: usuario.id,
->>>>>>> diego
         },
         {
           withCredentials: true,
@@ -55,8 +42,7 @@ export default function EditarLeasing() {
         console.log(data.prestamo);
         closeModal();
         router.push(
-          `/sistema/leasing${searchParams.toString() ? `?${searchParams.toString()}` : ""
-          }`
+          `/sistema/leasing${searchParams.toString() ? `?${searchParams.toString()}` : ""}`
         );
         toast.success("Editado correctamente");
       }
@@ -72,13 +58,7 @@ export default function EditarLeasing() {
 
   async function buscarCliente() {
     try {
-      const response = await axios.get(
-        `${config.apiUrl}/user/cliente/${selectedRow.usuarioId}`
-      );
-<<<<<<< HEAD
-      console.log(response.data);
-=======
->>>>>>> diego
+      const response = await axios.get(`${config.apiUrl}/user/cliente/${selectedRow.usuarioId}`);
       setUsuario(response.data.usuario);
     } catch (error) {
       console.error("Error buscando clientes:", error);
@@ -91,35 +71,28 @@ export default function EditarLeasing() {
     //@ts-ignore
   }, []);
 
-  const {
-    values,
-    errors,
-    touched,
-    setFieldValue,
-    handleBlur,
-    handleChange,
-    handleSubmit,
-  } = useFormik({
-    initialValues: {
-      codSer: selectedRow.codSer,
-      documento: selectedRow.documento ?? "",
-      tipo_documento: selectedRow.tipo_documento ?? "",
-      numero: selectedRow.numero,
-      precio: selectedRow.precio,
-      fecha_inicial: selectedRow.fecha_inicial,
-      fecha_final: selectedRow.fecha_final,
-      dias: selectedRow.dias,
-      estatus: selectedRow.estatus,
-      cobroTotal: selectedRow.cobroTotal,
-      tc: selectedRow.tc,
-      factura: "",
-      tipo: selectedRow.tipo,
-      codigoFacturaBoletaAnulado: '',
-      codigoFacturaBoleta: selectedRow.codigoFacturaBoleta
-    },
-    // validationSchema: AgregarLeasingSchema,
-    onSubmit: editarLeasing,
-  });
+  const { values, errors, touched, setFieldValue, handleBlur, handleChange, handleSubmit } =
+    useFormik({
+      initialValues: {
+        codSer: selectedRow.codSer,
+        documento: selectedRow.documento ?? "",
+        tipo_documento: selectedRow.tipo_documento ?? "",
+        numero: selectedRow.numero,
+        precio: selectedRow.precio,
+        fecha_inicial: selectedRow.fecha_inicial,
+        fecha_final: selectedRow.fecha_final,
+        dias: selectedRow.dias,
+        estatus: selectedRow.estatus,
+        cobroTotal: selectedRow.cobroTotal,
+        tc: selectedRow.tc,
+        factura: "",
+        tipo: selectedRow.tipo,
+        codigoFacturaBoletaAnulado: "",
+        codigoFacturaBoleta: selectedRow.codigoFacturaBoleta,
+      },
+      // validationSchema: AgregarLeasingSchema,
+      onSubmit: editarLeasing,
+    });
 
   useEffect(() => {
     if (usuario) {
@@ -127,16 +100,13 @@ export default function EditarLeasing() {
       setFieldValue("usuarioId", usuario.id ?? "");
       setFieldValue("documento", usuario.documento ?? "");
       setFieldValue("tipo_documento", usuario.tipo_documento ?? "");
-      setFieldValue("tipo", usuario.tipo_cliente === 'persona_juridica' ? 'FACTURA' : 'BOLETA');
+      setFieldValue("tipo", usuario.tipo_cliente === "persona_juridica" ? "FACTURA" : "BOLETA");
     }
   }, [setFieldValue, usuario]);
 
   useEffect(() => {
     if (values.fecha_inicial === "" || values.fecha_final === "") return;
-    setFieldValue(
-      "dias",
-      calcularDiasEntreFechas(values.fecha_inicial, values.fecha_final)
-    );
+    setFieldValue("dias", calcularDiasEntreFechas(values.fecha_inicial, values.fecha_final));
   }, [values.fecha_inicial, values.fecha_final, setFieldValue]);
 
   useEffect(() => {
@@ -145,17 +115,14 @@ export default function EditarLeasing() {
   }, [values.precio, values.numero, setFieldValue]);
 
   useEffect(() => {
-
-    if (values.factura === '') {
-      if (values.codigoFacturaBoletaAnulado === '') return
-      setFieldValue('codigoFacturaBoleta', values.codigoFacturaBoletaAnulado)
+    if (values.factura === "") {
+      if (values.codigoFacturaBoletaAnulado === "") return;
+      setFieldValue("codigoFacturaBoleta", values.codigoFacturaBoletaAnulado);
+    } else if (values.factura === "ANULADO" || values.factura === "NOTA DE CREDITO") {
+      setFieldValue("codigoFacturaBoletaAnulado", values.codigoFacturaBoleta);
+      setFieldValue("codigoFacturaBoleta", "");
     }
-    else if (values.factura === 'ANULADO' || values.factura === 'NOTA DE CREDITO') {
-      setFieldValue('codigoFacturaBoletaAnulado', values.codigoFacturaBoleta)
-      setFieldValue('codigoFacturaBoleta', '')
-    }
-
-  }, [values.factura, setFieldValue])
+  }, [values.factura, setFieldValue]);
 
   return (
     <div>
@@ -166,10 +133,7 @@ export default function EditarLeasing() {
         <div className="w-full">
           <div className="grid grid-cols-1 mb-5 gap-x-4 gap-y-6 md:grid-cols-3">
             <div className="w-full">
-              <BusquedaCliente
-                setUsuario={setUsuario}
-                usuarioBuscado={usuario}
-              />
+              <BusquedaCliente setUsuario={setUsuario} usuarioBuscado={usuario} />
             </div>
             <div className="w-full">
               <InputForm
@@ -192,19 +156,12 @@ export default function EditarLeasing() {
                 placeholder="Tipo de Documento"
                 type="text"
                 disabled
-                value={
-                  usuario && usuario.tipo_documento
-                    ? usuario.tipo_documento
-                    : ""
-                }
+                value={usuario && usuario.tipo_documento ? usuario.tipo_documento : ""}
                 className="uppercase"
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
-              <Errors
-                errors={errors.tipo_documento}
-                touched={touched.tipo_documento}
-              />
+              <Errors errors={errors.tipo_documento} touched={touched.tipo_documento} />
             </div>
             <div className="w-full">
               <InputForm
@@ -266,19 +223,12 @@ export default function EditarLeasing() {
                 name="fecha_inicial"
                 placeholder="Fecha Inicial"
                 type="date"
-                value={
-                  values.fecha_inicial
-                    ? values.fecha_inicial.toString().split("T")[0]
-                    : ""
-                }
+                value={values.fecha_inicial ? values.fecha_inicial.toString().split("T")[0] : ""}
                 className=""
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
-              <Errors
-                errors={errors.fecha_inicial}
-                touched={touched.fecha_inicial}
-              />
+              <Errors errors={errors.fecha_inicial} touched={touched.fecha_inicial} />
             </div>
             <div className="w-full">
               <InputForm
@@ -286,19 +236,12 @@ export default function EditarLeasing() {
                 name="fecha_final"
                 placeholder="Fecha Final"
                 type="date"
-                value={
-                  values.fecha_final
-                    ? values.fecha_final.toString().split("T")[0]
-                    : ""
-                }
+                value={values.fecha_final ? values.fecha_final.toString().split("T")[0] : ""}
                 className=""
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
-              <Errors
-                errors={errors.fecha_final}
-                touched={touched.fecha_final}
-              />
+              <Errors errors={errors.fecha_final} touched={touched.fecha_final} />
             </div>
             <div className="w-full">
               <InputForm
@@ -371,9 +314,7 @@ export default function EditarLeasing() {
               <Errors errors={errors.codigoFacturaBoleta} touched={touched.codigoFacturaBoleta} />
             </div>
             <div className="w-full">
-              <label className="text-black-800">
-                Estado de la Factura o Boleta
-              </label>
+              <label className="text-black-800">Estado de la Factura o Boleta</label>
               <select
                 name="factura"
                 id=""
