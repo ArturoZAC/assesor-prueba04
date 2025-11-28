@@ -1,0 +1,375 @@
+Usuario no encontrado para Cliente/Titular: "Jose Alberto Torres" en la operación 12759
+Usuario no encontrado para Cliente/Titular: "Nelly Sinche" en la operación 12760
+Usuario no encontrado para Cliente/Titular: "Sandra Roman" en la operación 12761
+Usuario no encontrado para Cliente/Titular: "MIDPOINT FX PERU S.A.C." en la operación 12762
+Usuario no encontrado para Cliente/Titular: "CAMBIO SEGURO FINTECH" en la operación 12763
+Usuario no encontrado para Cliente/Titular: "Ana Paula Tataje" en la operación 12764
+Usuario no encontrado para Cliente/Titular: "Ana Paula Tataje" en la operación 12765
+Usuario no encontrado para Cliente/Titular: "Sergio Caceres" en la operación 12766
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 12768
+Usuario no encontrado para Cliente/Titular: "YURAMAYO" en la operación 12769
+Usuario no encontrado para Cliente/Titular: "FROMM PERU" en la operación 12770
+Usuario no encontrado para Cliente/Titular: "NUEVA ESPERANZA HYDRO" en la operación 12771
+Usuario no encontrado para Cliente/Titular: "Luis Felipe Silva" en la operación 12772
+Usuario no encontrado para Cliente/Titular: "Jose Antonio Chang" en la operación 12773
+Usuario no encontrado para Cliente/Titular: "Adela de la Colina" en la operación 12774
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 12775
+Usuario no encontrado para Cliente/Titular: "Cristian Ortega" en la operación 12776
+Usuario no encontrado para Cliente/Titular: "CAMBIA SEGURO SAC" en la operación 12777
+Usuario no encontrado para Cliente/Titular: "ANDRICK CONSULTORES" en la operación 12778
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 12779
+Usuario no encontrado para Cliente/Titular: "Maria Teresa Coello" en la operación 12780
+Usuario no encontrado para Cliente/Titular: "VITRA PERU" en la operación 12781
+Usuario no encontrado para Cliente/Titular: "Eloisa Nuñez" en la operación 12782
+Usuario no encontrado para Cliente/Titular: "Yessica Hernandez" en la operación 12783
+Usuario no encontrado para Cliente/Titular: "SERATIC" en la operación 12784
+Usuario no encontrado para Cliente/Titular: "SERATIC" en la operación 12785
+Usuario no encontrado para Cliente/Titular: "SAN ROMAN" en la operación 12786
+Usuario no encontrado para Cliente/Titular: "HIDROLAND" en la operación 12787
+Usuario no encontrado para Cliente/Titular: "Walter Zarate" en la operación 12788
+Usuario no encontrado para Cliente/Titular: "Diana Farfan" en la operación 12789
+Usuario no encontrado para Cliente/Titular: "CAMBIA SEGURO SAC" en la operación 12790
+Usuario no encontrado para Cliente/Titular: "Nelly Sinche" en la operación 12791
+Usuario no encontrado para Cliente/Titular: "FROMM PERU" en la operación 12792
+Usuario no encontrado para Cliente/Titular: "ENERGIAS FIRMES " en la operación 12793
+Usuario no encontrado para Cliente/Titular: "MIDPOINT FX PERU S.A.C." en la operación 12794
+Usuario no encontrado para Cliente/Titular: "MIDPOINT FX PERU S.A.C." en la operación 12796
+Usuario no encontrado para Cliente/Titular: "Carolina Roque" en la operación 12797
+Usuario no encontrado para Cliente/Titular: "CAMBIA SEGURO SAC" en la operación 12798
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 12799
+Usuario no encontrado para Cliente/Titular: "HIDROLAND" en la operación 12800
+Usuario no encontrado para Cliente/Titular: "NANDY SAC" en la operación 12801
+Usuario no encontrado para Cliente/Titular: "BRUNO DIAZ & ASOCIADOS" en la operación 12802
+Usuario no encontrado para Cliente/Titular: "MIDPOINT FX PERU S.A.C." en la operación 12803
+Usuario no encontrado para Cliente/Titular: "CAMBIA SEGURO SAC" en la operación 12804
+Usuario no encontrado para Cliente/Titular: "FROMM PERU" en la operación 12805
+Usuario no encontrado para Cliente/Titular: "Alonso Rivas" en la operación 12806
+Usuario no encontrado para Cliente/Titular: "CAMBIA SEGURO SAC" en la operación 12807
+Usuario no encontrado para Cliente/Titular: "CAMBIA SEGURO SAC" en la operación 12808
+Usuario no encontrado para Cliente/Titular: "CAMBIA SEGURO SAC" en la operación 12809
+Usuario no encontrado para Cliente/Titular: "Veronica Veintemilla" en la operación 12810
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 12811
+Usuario no encontrado para Cliente/Titular: "Yessica Hernandez" en la operación 12812
+Usuario no encontrado para Cliente/Titular: "MIDPOINT FX PERU S.A.C." en la operación 12813
+Usuario no encontrado para Cliente/Titular: "Yessica Aguirre" en la operación 12814
+Usuario no encontrado para Cliente/Titular: "Olga Frisancho" en la operación 12815
+Usuario no encontrado para Cliente/Titular: "Mercedes Mena" en la operación 12816
+Usuario no encontrado para Cliente/Titular: "Alonso Rivas" en la operación 12817
+Usuario no encontrado para Cliente/Titular: "JUNGBLUTH SEGUROS" en la operación 12818
+Usuario no encontrado para Cliente/Titular: "Hector Bueno" en la operación 12819
+Usuario no encontrado para Cliente/Titular: "Jose Antonio Chang" en la operación 12820
+Usuario no encontrado para Cliente/Titular: "CAMBIO SEGURO FINTECH" en la operación 12821
+Usuario no encontrado para Cliente/Titular: "FROMM PERU" en la operación 12822
+Usuario no encontrado para Cliente/Titular: "Nelly Sinche" en la operación 12823
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 12824
+Usuario no encontrado para Cliente/Titular: "ENERGIAS FIRMES " en la operación 12826
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 12829
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 12830
+Usuario no encontrado para Cliente/Titular: "Alvaro Montenegro" en la operación 12832
+Usuario no encontrado para Cliente/Titular: "HIDROLAND" en la operación 12835
+Usuario no encontrado para Cliente/Titular: "ENERGIAS FIRMES " en la operación 12838
+Usuario no encontrado para Cliente/Titular: "Daisy Guzman" en la operación 12839
+Usuario no encontrado para Cliente/Titular: "PORTA" en la operación 12845
+Usuario no encontrado para Cliente/Titular: "Lizbeth Saldivar" en la operación 12853
+Usuario no encontrado para Cliente/Titular: "RUBIO MONOCOAT" en la operación 12854
+Usuario no encontrado para Cliente/Titular: "Carlo Watanabe " en la operación 12856
+Usuario no encontrado para Cliente/Titular: "CELMEDIA SAC" en la operación 12862
+Usuario no encontrado para Cliente/Titular: "Jesus Saavedra" en la operación 12866
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 12871
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 12873
+Usuario no encontrado para Cliente/Titular: "SAN ROMAN" en la operación 12874
+Usuario no encontrado para Cliente/Titular: "INVERSIONES ESTRATEGICAS SAC" en la operación 12875
+Usuario no encontrado para Cliente/Titular: "IFRS MASTERS PERU SAC" en la operación 12883
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 12884
+Usuario no encontrado para Cliente/Titular: "Miguel Aparicio" en la operación 12885
+Usuario no encontrado para Cliente/Titular: "VITRA PERU" en la operación 12886
+Usuario no encontrado para Cliente/Titular: "OFFERWISE PERU SAC" en la operación 12888
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 12890
+Usuario no encontrado para Cliente/Titular: "MISION BIBLICA" en la operación 12892
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 12893
+Usuario no encontrado para Cliente/Titular: "Daisy Guzman" en la operación 12894
+Usuario no encontrado para Cliente/Titular: "HIDROLAND" en la operación 12895
+Usuario no encontrado para Cliente/Titular: "MINING & CIVIL S.A.C" en la operación 12899
+Usuario no encontrado para Cliente/Titular: "HIDROLAND" en la operación 12905
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 12907
+Usuario no encontrado para Cliente/Titular: "CELMEDIA FIDELIZACION SAC" en la operación 12910
+Usuario no encontrado para Cliente/Titular: "Gonzalo Gomez Sanchez" en la operación 12914
+Usuario no encontrado para Cliente/Titular: "RUBIO MONOCOAT" en la operación 12918
+Usuario no encontrado para Cliente/Titular: "LA COLONIAL" en la operación 12925
+Usuario no encontrado para Cliente/Titular: "ENERGIAS FIRMES " en la operación 12930
+Usuario no encontrado para Cliente/Titular: "Alvaro Montenegro" en la operación 12939
+Usuario no encontrado para Cliente/Titular: "PORTA" en la operación 12944
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 12945
+Usuario no encontrado para Cliente/Titular: "VITRA PERU" en la operación 12946
+Usuario no encontrado para Cliente/Titular: "BDV CONSULTORES " en la operación 12947
+Usuario no encontrado para Cliente/Titular: "COMERCIO TECNOLOGICO DEL PERU" en la operación 12948
+Usuario no encontrado para Cliente/Titular: "ENERGIAS FIRMES " en la operación 12952
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 12956
+Usuario no encontrado para Cliente/Titular: "VITRA PERU" en la operación 12958
+Usuario no encontrado para Cliente/Titular: "SAN ROMAN" en la operación 12966
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 12970
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 12972
+Usuario no encontrado para Cliente/Titular: "CELMEDIA FIDELIZACION SAC" en la operación 12973
+Usuario no encontrado para Cliente/Titular: "COMERCIO TECNOLOGICO DEL PERU" en la operación 12974
+Usuario no encontrado para Cliente/Titular: "SAN ROMAN" en la operación 12977
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 12978
+Usuario no encontrado para Cliente/Titular: "Daisy Guzman" en la operación 12982
+Usuario no encontrado para Cliente/Titular: "Fernando Marengo" en la operación 12984
+Usuario no encontrado para Cliente/Titular: "Veronica Veintemilla" en la operación 12994
+Usuario no encontrado para Cliente/Titular: "QAPAQ" en la operación 12996
+Usuario no encontrado para Cliente/Titular: "RESINAS Y QUIMICOS" en la operación 12997
+Usuario no encontrado para Cliente/Titular: "Alvaro Montenegro" en la operación 13001
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13003
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13007
+Usuario no encontrado para Cliente/Titular: "MISION BIBLICA" en la operación 13008
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13009
+Usuario no encontrado para Cliente/Titular: "Daisy Guzman" en la operación 13011
+Usuario no encontrado para Cliente/Titular: "MINING & CIVIL S.A.C" en la operación 13012
+Usuario no encontrado para Cliente/Titular: "Lizbeth Saldivar" en la operación 13013
+Usuario no encontrado para Cliente/Titular: "Daisy Guzman" en la operación 13014
+Usuario no encontrado para Cliente/Titular: "Rodolfo Figallo" en la operación 13017
+Usuario no encontrado para Cliente/Titular: "Nancy Ayala" en la operación 13023
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 13024
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 13032
+Usuario no encontrado para Cliente/Titular: "RUBIO MONOCOAT" en la operación 13039
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13040
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13041
+Usuario no encontrado para Cliente/Titular: "Alvaro Montenegro" en la operación 13046
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13051
+Usuario no encontrado para Cliente/Titular: "Alonso Rivas" en la operación 13054
+Usuario no encontrado para Cliente/Titular: "Rodolfo Figallo" en la operación 13055
+Usuario no encontrado para Cliente/Titular: "VITRA PERU" en la operación 13057
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 13058
+Usuario no encontrado para Cliente/Titular: "Mikaela Meini" en la operación 13059
+Usuario no encontrado para Cliente/Titular: "ORTODONCIA & BRACKETS" en la operación 13060
+Usuario no encontrado para Cliente/Titular: "QAPAQ" en la operación 13062
+Usuario no encontrado para Cliente/Titular: "BRUNO DIAZ & ASOCIADOS" en la operación 13065
+Usuario no encontrado para Cliente/Titular: "Lizbeth Saldivar" en la operación 13072
+Usuario no encontrado para Cliente/Titular: "CLOUDBOX LATAM SAC" en la operación 13074
+Usuario no encontrado para Cliente/Titular: "BRUNO DIAZ & ASOCIADOS" en la operación 13075
+Usuario no encontrado para Cliente/Titular: "MISION BIBLICA" en la operación 13078
+Usuario no encontrado para Cliente/Titular: "PORTA" en la operación 13087
+Usuario no encontrado para Cliente/Titular: "ENGIRA" en la operación 13088
+Usuario no encontrado para Cliente/Titular: "Lizbeth Saldivar" en la operación 13090
+Usuario no encontrado para Cliente/Titular: "CELMEDIA SAC" en la operación 13091
+Usuario no encontrado para Cliente/Titular: "Gonzalo Gomez Sanchez" en la operación 13094
+Usuario no encontrado para Cliente/Titular: "MISION BIBLICA" en la operación 13095
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13097
+Usuario no encontrado para Cliente/Titular: "CELMEDIA FIDELIZACION SAC" en la operación 13099
+Usuario no encontrado para Cliente/Titular: "WML TECHNOLOGY " en la operación 13102
+Usuario no encontrado para Cliente/Titular: "IDAJA" en la operación 13104
+Usuario no encontrado para Cliente/Titular: "RUBIO MONOCOAT" en la operación 13108
+Usuario no encontrado para Cliente/Titular: "Miguel Aparicio" en la operación 13114
+Usuario no encontrado para Cliente/Titular: "COMERCIO TECNOLOGICO DEL PERU" en la operación 13115
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13127
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 13132
+Usuario no encontrado para Cliente/Titular: "VITRA PERU" en la operación 13133
+Usuario no encontrado para Cliente/Titular: "BRUNO DIAZ & ASOCIADOS" en la operación 13135
+Usuario no encontrado para Cliente/Titular: "Solange Salazar" en la operación 13140
+Usuario no encontrado para Cliente/Titular: "Daisy Guzman" en la operación 13146
+Usuario no encontrado para Cliente/Titular: "INVERSIONES ESTRATEGICAS SAC" en la operación 13147
+Usuario no encontrado para Cliente/Titular: "SAN ROMAN" en la operación 13149
+Usuario no encontrado para Cliente/Titular: "BRUNO DIAZ & ASOCIADOS" en la operación 13152
+Usuario no encontrado para Cliente/Titular: "Veronica Veintemilla" en la operación 13163
+Usuario no encontrado para Cliente/Titular: "ANDRICK CONSULTORES" en la operación 13165
+Usuario no encontrado para Cliente/Titular: "SAMY & YOU" en la operación 13181
+Usuario no encontrado para Cliente/Titular: "LA CRIANZA" en la operación 13183
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13185
+Usuario no encontrado para Cliente/Titular: "Daisy Guzman" en la operación 13192
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 13193
+Usuario no encontrado para Cliente/Titular: "RUBIO MONOCOAT" en la operación 13194
+Usuario no encontrado para Cliente/Titular: "Nancy Ayala" en la operación 13198
+Usuario no encontrado para Cliente/Titular: "THS" en la operación 13200
+Usuario no encontrado para Cliente/Titular: "ZICO" en la operación 13202
+Usuario no encontrado para Cliente/Titular: "Mikaela Meini" en la operación 13203
+Usuario no encontrado para Cliente/Titular: "Alonso Rivas" en la operación 13204
+Usuario no encontrado para Cliente/Titular: "THE GREEN CAMELEON" en la operación 13207
+Usuario no encontrado para Cliente/Titular: "La Crianza" en la operación 13215
+Usuario no encontrado para Cliente/Titular: "MINING & CIVIL S.A.C" en la operación 13216
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 13217
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13223
+Usuario no encontrado para Cliente/Titular: "IDAJA" en la operación 13228
+Usuario no encontrado para Cliente/Titular: "QAPAQ" en la operación 13236
+Usuario no encontrado para Cliente/Titular: "CELMEDIA FIDELIZACION SAC" en la operación 13237
+Usuario no encontrado para Cliente/Titular: "Shaaron Lopez" en la operación 13238
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 13244
+Usuario no encontrado para Cliente/Titular: "VALOREM" en la operación 13245
+Usuario no encontrado para Cliente/Titular: "Rodolfo Figallo" en la operación 13246
+Usuario no encontrado para Cliente/Titular: "Guillermo Tovar" en la operación 13247
+Usuario no encontrado para Cliente/Titular: "Carlo Watanabe " en la operación 13248
+Usuario no encontrado para Cliente/Titular: "SAN ROMAN" en la operación 13252
+Usuario no encontrado para Cliente/Titular: "Alvaro Montenegro" en la operación 13257
+Usuario no encontrado para Cliente/Titular: "SAN ROMAN" en la operación 13263
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13265
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13270
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13271
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13272
+Usuario no encontrado para Cliente/Titular: "EXPLORACIONES AMBAR " en la operación 13277
+Usuario no encontrado para Cliente/Titular: "Alvaro Montenegro" en la operación 13283
+Usuario no encontrado para Cliente/Titular: "Antonieta Bianco" en la operación 13284
+Usuario no encontrado para Cliente/Titular: "THE GREEN CAMELEON" en la operación 13289
+Usuario no encontrado para Cliente/Titular: "Ana Requejo" en la operación 13296
+Usuario no encontrado para Cliente/Titular: "CELMEDIA SAC" en la operación 13308
+Usuario no encontrado para Cliente/Titular: "VALOREM" en la operación 13315
+Usuario no encontrado para Cliente/Titular: "IDAJA" en la operación 13317
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13320
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13322
+Usuario no encontrado para Cliente/Titular: "Gonzalo Gomez Sanchez" en la operación 13324
+Usuario no encontrado para Cliente/Titular: "SAMY & YOU" en la operación 13325
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13328
+Usuario no encontrado para Cliente/Titular: "PORTA" en la operación 13329
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13332
+Usuario no encontrado para Cliente/Titular: "THE GREEN CAMELEON" en la operación 13337
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13346
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13354
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 13356
+Usuario no encontrado para Cliente/Titular: "COMERCIO TECNOLOGICO DEL PERU" en la operación 13357
+Usuario no encontrado para Cliente/Titular: "BDV CONSULTORES " en la operación 13361
+Usuario no encontrado para Cliente/Titular: "SAN ROMAN" en la operación 13362
+Usuario no encontrado para Cliente/Titular: "COMERCIO TECNOLOGICO DEL PERU" en la operación 13363
+Usuario no encontrado para Cliente/Titular: "Eduardo Calle" en la operación 13368
+Usuario no encontrado para Cliente/Titular: "Ricardo Ugaz " en la operación 13372
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13373
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13375
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13380
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13382
+Usuario no encontrado para Cliente/Titular: "Ursula Heysen" en la operación 13384
+Usuario no encontrado para Cliente/Titular: "Guillermo Tovar" en la operación 13385
+Usuario no encontrado para Cliente/Titular: "Alvaro Montenegro" en la operación 13387
+Usuario no encontrado para Cliente/Titular: "VALOREM" en la operación 13389
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13393
+Usuario no encontrado para Cliente/Titular: "BRUNO DIAZ & ASOCIADOS" en la operación 13394
+Usuario no encontrado para Cliente/Titular: "VITRA PERU" en la operación 13396
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13398
+Usuario no encontrado para Cliente/Titular: "Alvaro Montenegro" en la operación 13399
+Usuario no encontrado para Cliente/Titular: "Eduardo Calle" en la operación 13402
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13403
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13404
+Usuario no encontrado para Cliente/Titular: "ANDRICK CONSULTORES" en la operación 13408
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13423
+Usuario no encontrado para Cliente/Titular: "CELMEDIA FIDELIZACION SAC" en la operación 13428
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13434
+Usuario no encontrado para Cliente/Titular: "Melany Suarez" en la operación 13438
+Usuario no encontrado para Cliente/Titular: "THS" en la operación 13440
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13444
+Usuario no encontrado para Cliente/Titular: "Eduardo Calle" en la operación 13447
+Usuario no encontrado para Cliente/Titular: "RUBIO MONOCOAT" en la operación 13449
+Usuario no encontrado para Cliente/Titular: "THE GREEN CAMELEON" en la operación 13450
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13456
+Usuario no encontrado para Cliente/Titular: "MINING & CIVIL S.A.C" en la operación 13460
+Usuario no encontrado para Cliente/Titular: "ENGIRA" en la operación 13461
+Usuario no encontrado para Cliente/Titular: "CELMEDIA SAC" en la operación 13463
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13465
+Usuario no encontrado para Cliente/Titular: "EXPLORACIONES AMBAR " en la operación 13466
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13469
+Usuario no encontrado para Cliente/Titular: "Daisy Guzman" en la operación 13470
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 13472
+Usuario no encontrado para Cliente/Titular: "IDAJA" en la operación 13473
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13475
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13477
+Usuario no encontrado para Cliente/Titular: "Kyara Lara" en la operación 13478
+Usuario no encontrado para Cliente/Titular: "Eduardo Calle" en la operación 13479
+Usuario no encontrado para Cliente/Titular: "RESINAS Y QUIMICOS" en la operación 13481
+Usuario no encontrado para Cliente/Titular: "Eduardo Calle" en la operación 13482
+Usuario no encontrado para Cliente/Titular: "Daisy Guzman" en la operación 13485
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13487
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 13488
+Usuario no encontrado para Cliente/Titular: "Eduardo Calle" en la operación 13495
+Usuario no encontrado para Cliente/Titular: "BRUNO DIAZ & ASOCIADOS" en la operación 13497
+Usuario no encontrado para Cliente/Titular: "Enrique Azalde" en la operación 13498
+Usuario no encontrado para Cliente/Titular: "Alex Vela" en la operación 13500
+Usuario no encontrado para Cliente/Titular: "VALOREM" en la operación 13501
+Usuario no encontrado para Cliente/Titular: "Enrique Azalde" en la operación 13502
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 13503
+Usuario no encontrado para Cliente/Titular: "Eduardo Calle" en la operación 13505
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13512
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13519
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13522
+Usuario no encontrado para Cliente/Titular: "Eduardo Calle" en la operación 13525
+Usuario no encontrado para Cliente/Titular: "IDAJA" en la operación 13529
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13534
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13535
+Usuario no encontrado para Cliente/Titular: "Alvaro Montenegro" en la operación 13536
+Usuario no encontrado para Cliente/Titular: "Enrique Azalde" en la operación 13537
+Usuario no encontrado para Cliente/Titular: "Eduardo Calle" en la operación 13539
+Usuario no encontrado para Cliente/Titular: "INVERSIONES ESTRATEGICAS SAC" en la operación 13541
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13543
+Usuario no encontrado para Cliente/Titular: "VALOREM" en la operación 13549
+Usuario no encontrado para Cliente/Titular: "THE GREEN CAMELEON" en la operación 13551
+Usuario no encontrado para Cliente/Titular: "Gonzalo Gomez Sanchez" en la operación 13553
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13554
+Usuario no encontrado para Cliente/Titular: "EMBARCATE YA" en la operación 13555
+Usuario no encontrado para Cliente/Titular: "HIDROLAND" en la operación 13556
+Usuario no encontrado para Cliente/Titular: "CELMEDIA SAC" en la operación 13558
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13560
+Usuario no encontrado para Cliente/Titular: "Edwin Salinas " en la operación 13563
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13569
+Usuario no encontrado para Cliente/Titular: "ROCKETBOT PERU" en la operación 13571
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 13572
+Usuario no encontrado para Cliente/Titular: "ANDRICK CONSULTORES" en la operación 13577
+Usuario no encontrado para Cliente/Titular: "Liliana Takayana" en la operación 13582
+Usuario no encontrado para Cliente/Titular: "Eduardo Calle" en la operación 13583
+Usuario no encontrado para Cliente/Titular: "CELMEDIA FIDELIZACION SAC" en la operación 13584
+Usuario no encontrado para Cliente/Titular: "IFRS MASTERS PERU SAC" en la operación 13589
+Usuario no encontrado para Cliente/Titular: "Felipe Goicochea" en la operación 13593
+Usuario no encontrado para Cliente/Titular: "HIDROLAND" en la operación 13597
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13602
+Usuario no encontrado para Cliente/Titular: "ANDRICK CONSULTORES" en la operación 13607
+Usuario no encontrado para Cliente/Titular: "RENTA 4 SAB" en la operación 13608
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13610
+Usuario no encontrado para Cliente/Titular: "Daisy Guzman" en la operación 13613
+Usuario no encontrado para Cliente/Titular: "ANDRICK CONSULTORES" en la operación 13622
+Usuario no encontrado para Cliente/Titular: "Eduardo Calle" en la operación 13623
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13626
+Usuario no encontrado para Cliente/Titular: "PERUVIAN STYLE " en la operación 13628
+Usuario no encontrado para Cliente/Titular: "VALOREM" en la operación 13636
+Usuario no encontrado para Cliente/Titular: "Guillermo Tovar" en la operación 13639
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13641
+Usuario no encontrado para Cliente/Titular: "THS" en la operación 13645
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13649
+Usuario no encontrado para Cliente/Titular: "Yourka Lucich" en la operación 13650
+Usuario no encontrado para Cliente/Titular: "Solange Salazar" en la operación 13651
+Usuario no encontrado para Cliente/Titular: "DIFAMEC" en la operación 13654
+Usuario no encontrado para Cliente/Titular: "Mayelin Mendoza" en la operación 13655
+Usuario no encontrado para Cliente/Titular: "ACTIVA ELEMENTS" en la operación 13660
+Usuario no encontrado para Cliente/Titular: "Mayelin Mendoza" en la operación 13665
+Usuario no encontrado para Cliente/Titular: "HIDROLAND" en la operación 13666
+Usuario no encontrado para Cliente/Titular: "HIDROLAND" en la operación 13667
+Usuario no encontrado para Cliente/Titular: "LA CRIANZA" en la operación 13671
+Usuario no encontrado para Cliente/Titular: "ROCKETBOT PERU" en la operación 13677
+Usuario no encontrado para Cliente/Titular: "THE GREEN CAMELEON" en la operación 13678
+Usuario no encontrado para Cliente/Titular: "MINING & CIVIL S.A.C" en la operación 13679
+Usuario no encontrado para Cliente/Titular: "Gloria Bruno" en la operación 13684
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 13685
+Usuario no encontrado para Cliente/Titular: "DINNER CLUB" en la operación 13688
+Usuario no encontrado para Cliente/Titular: "Enrique Azalde" en la operación 13689
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13690
+Usuario no encontrado para Cliente/Titular: "PERUVIAN STYLE " en la operación 13692
+Usuario no encontrado para Cliente/Titular: "HIDROLAND" en la operación 13693
+Usuario no encontrado para Cliente/Titular: "BIA CONSULTORES " en la operación 13694
+Usuario no encontrado para Cliente/Titular: "Veronica Veintemilla" en la operación 13698
+Usuario no encontrado para Cliente/Titular: "HIDROLAND" en la operación 13703
+Usuario no encontrado para Cliente/Titular: "VITRA PERU" en la operación 13704
+Usuario no encontrado para Cliente/Titular: "MINERA SANTA MARIA" en la operación 13705
+Usuario no encontrado para Cliente/Titular: "Rodolfo Figallo" en la operación 13712
+Usuario no encontrado para Cliente/Titular: "Guillermo Tovar" en la operación 13717
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13720
+Usuario no encontrado para Cliente/Titular: "Eduardo Calle" en la operación 13726
+Usuario no encontrado para Cliente/Titular: "Yessica Hernandez" en la operación 13730
+Usuario no encontrado para Cliente/Titular: "AFRA TRADE SAC" en la operación 13733
+Usuario no encontrado para Cliente/Titular: "BIOTECH CORP" en la operación 13734
+Usuario no encontrado para Cliente/Titular: "LAFORE COMPANIES " en la operación 13735
+Usuario no encontrado para Cliente/Titular: "CAMBIA SEGURO SAC" en la operación 13736
+Usuario no encontrado para Cliente/Titular: "FROMM PERU" en la operación 13737
+Usuario no encontrado para Cliente/Titular: "TELREDSAT" en la operación 13738
+Usuario no encontrado para Cliente/Titular: "Miguel Aparicio" en la operación 13739
+Usuario no encontrado para Cliente/Titular: "SAN ROMAN" en la operación 13740
+Usuario no encontrado para Cliente/Titular: "VALOREM" en la operación 13741
+Usuario no encontrado para Cliente/Titular: "Jessica Robles" en la operación 13742
+Usuario no encontrado para Cliente/Titular: "Luigy Rivadeneira" en la operación 13743
+Usuario no encontrado para Cliente/Titular: "HUB PERU CARGO SAC" en la operación 13744
+Usuario no encontrado para Cliente/Titular: "Eduardo Calle" en la operación 13745
+Usuario no encontrado para Cliente/Titular: "VITRA PERU" en la operación 13746
+Usuario no encontrado para Cliente/Titular: "MIDPOINT FX PERU S.A.C." en la operación 13747
+Usuario no encontrado para Cliente/Titular: "CAMBIA SEGURO SAC" en la operación 13748
+Usuario no encontrado para Cliente/Titular: "Ana Paula Tataje" en la operación 13749

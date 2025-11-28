@@ -1,0 +1,47 @@
+[
+  {
+    "key": "b37039ee941e2182796476bd9c24d00f",
+    "uso": 1000,
+    "ultimoReset": "2025-01-01T00:00:00.000Z",
+    "ultimaValidacion": "2025-01-15T10:30:00.000Z",
+    "creditosReales": 934,
+    "activa": true,
+    "erroresConsecutivos": 0
+  },
+  {
+    "key": "e731d5f838c7c9b2bb922964332597d0",
+    "uso": 747,
+    "ultimoReset": "2025-01-01T00:00:00.000Z",
+    "ultimaValidacion": "2025-01-15T10:30:05.000Z",
+    "creditosReales": 1000,
+    "activa": true,
+    "erroresConsecutivos": 0
+  },
+  {
+    "key": "e266ba6baab47a7fd6961b4d21816f1b",
+    "uso": 4,
+    "ultimoReset": "2025-01-01T00:00:00.000Z",
+    "ultimaValidacion": "2025-01-15T10:30:10.000Z",
+    "creditosReales": 1000,
+    "activa": true,
+    "erroresConsecutivos": 0
+  },
+  {
+    "key": "5e4c7aa34b8cc8bff79d5b06df981cd4",
+    "uso": 4,
+    "ultimoReset": "2025-01-01T00:00:00.000Z",
+    "ultimaValidacion": "2025-01-15T10:30:15.000Z",
+    "creditosReales": 1000,
+    "activa": true,
+    "erroresConsecutivos": 0
+  },
+  {
+    "key": "4aa2b8c4b3bdfe179c1a3ea20a61484e",
+    "uso": 3,
+    "ultimoReset": "2025-01-01T00:00:00.000Z",
+    "ultimaValidacion": "2025-01-15T10:30:20.000Z",
+    "creditosReales": 1000,
+    "activa": true,
+    "erroresConsecutivos": 0
+  }
+]

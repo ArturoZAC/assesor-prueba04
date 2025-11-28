@@ -1,0 +1,689 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "debian-openssl-1.0.x"]
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model Rol {
+    id        Int       @id @default(autoincrement())
+    nombre    String    @unique @db.VarChar(20)
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    Usuario   Usuario[]
+
+    @@map("roles")
+}
+
+model Usuario {
+    id                     String                 @id @default(cuid()) @db.Char(36)
+    nombres                String                 @db.VarChar(255)
+    email                  String
+    password               String
+    activo                 Boolean                @default(false)
+    cliente                String?                @db.VarChar(255)
+    departamento           String?                @db.VarChar(100)
+    direccion              String?                @db.VarChar(255)
+    distrito               String?                @db.VarChar(100)
+    nacionalidad           String?                @db.VarChar(100)
+    observacion            String?                @db.Text
+    ocupacion              String?                @db.VarChar(100)
+    otro                   String?                @db.VarChar(100)
+    provincia              String?                @db.VarChar(100)
+    telefono               String?                @db.VarChar(20)
+    tercero                String?                @db.VarChar(255)
+    vigente                String?                @db.VarChar(50)
+    apellido_materno       String?                @db.VarChar(100)
+    apellido_materno_apo   String?                @db.VarChar(100)
+    apellido_paterno       String?                @db.VarChar(100)
+    apellido_paterno_apo   String?                @db.VarChar(100)
+    cliente_2              String?                @db.VarChar(255)
+    codigo                 String                 @db.VarChar(20)
+    created_at             DateTime               @default(now())
+    documento              String?                @db.VarChar(100)
+    documento_2            String?                @db.VarChar(100)
+    documento_tercero      String?                @db.VarChar(100)
+    nombres_apo            String?                @db.VarChar(255)
+    numero_documento       String?                @db.VarChar(50)
+    rol_id                 Int                    @default(1)
+    tipo_cliente           String?                @db.VarChar(100)
+    tipo_documento         String?                @db.VarChar(50)
+    tipo_documento_cliente String?                @db.VarChar(100)
+    tipo_tercero           String?                @db.VarChar(100)
+    updated_at             DateTime               @updatedAt
+    leasingoperacion       LeasingOperacion[]
+    Prestamos              PrestamoOperacion[]
+    Operacion              Operacion[]
+    PasswordResetToken     PasswordResetToken[]
+    Facturacion            FacturacionOperacion[]
+    rol                    Rol                    @relation(fields: [rol_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@index([rol_id], map: "usuarios_rol_id_fkey")
+    @@map("usuarios")
+}
+
+model PasswordResetToken {
+    id        Int      @id @default(autoincrement())
+    token     String   @unique
+    expiresAt DateTime
+    userId    String
+    createdAt DateTime @default(now())
+    user      Usuario  @relation(fields: [userId], references: [id])
+
+    @@index([userId], map: "password_reset_tokens_userId_fkey")
+    @@map("password_reset_tokens")
+}
+
+model TipoCambio {
+    id              Int      @id @default(autoincrement())
+    precioCompra    Decimal  @db.Decimal(10, 4)
+    precioVenta     Decimal  @db.Decimal(10, 4)
+    moneda          String   @db.VarChar(10)
+    fecha           DateTime @default(now())
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+    intervaloCompra Decimal  @db.Decimal(10, 4)
+    intervaloVenta  Decimal  @db.Decimal(10, 4)
+    middlePrice     Float    @default(0)
+
+    @@map("tipo_cambio")
+}
+
+model Operacion {
+    id      Int           @id @default(autoincrement())
+    fecha   DateTime
+    numero  Int           @unique
+    tipo    TipoOperacion
+    t       String        @default("")
+    dolares Float
+
+    usuarioId String
+    usuario   Usuario @relation(fields: [usuarioId], references: [id])
+
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+
+    tipoCambioId Int                 @unique
+    tipoCambio   TipoCambioOperacion @relation("OperacionTipoCambio", fields: [tipoCambioId], references: [id], map: "fk_operacion_tipocambio", onDelete: Cascade)
+
+    flujoFondosId Int                  @unique
+    flujoFondos   FlujoFondosOperacion @relation("OperacionFlujoFondos", fields: [flujoFondosId], references: [id], map: "fk_operacion_flujofondos", onDelete: Cascade)
+
+    rendimientoId Int?                  @unique
+    rendimiento   RendimientoOperacion? @relation("OperacionRendimiento", fields: [rendimientoId], references: [id], map: "fk_operacion_rendimiento", onDelete: Cascade)
+
+    movimientoId Int                       @unique
+    movimiento   MovimientoFondosOperacion @relation("OperacionMovimientoFondos", fields: [movimientoId], references: [id], map: "fk_operacion_movimiento", onDelete: Cascade)
+
+    saldoFinalId Int?                 @unique
+    saldoFinal   SaldoFinalOperacion? @relation("OperacionSaldoFinal", fields: [saldoFinalId], references: [id], map: "fk_operacion_saldofinal", onDelete: Cascade)
+
+    resultadoId Int?                @unique
+    resultado   ResultadoOperacion? @relation("OperacionResultado", fields: [resultadoId], references: [id], map: "fk_operacion_resultado", onDelete: Cascade)
+
+    cuadreOperacion CuadreOperacion?       @relation("OperacionCuadre")
+    Facturacion     FacturacionOperacion[]
+
+    @@map("operaciones")
+}
+
+model CuadreOperacion {
+    id                     Int                      @id @default(autoincrement())
+    operacionId            Int                      @unique
+    operacion              Operacion                @relation("OperacionCuadre", fields: [operacionId], references: [id])
+    created_at             DateTime                 @default(now())
+    updated_at             DateTime                 @updatedAt
+    CuadreOperacionDolares CuadreOperacionDolares[]
+    CuadreOperacionSoles   CuadreOperacionSoles[]
+
+    @@map("cuadre_op")
+}
+
+model CuadreOperacionDolares {
+    id                 Int             @id @default(autoincrement())
+    cuadreOperacionId  Int
+    fecha_usd          DateTime
+    descripcion_op_usd String          @db.VarChar(500)
+    monto_usd          Float
+    referencia_usd     String          @db.VarChar(500)
+    diferencia_usd     Float
+    created_at         DateTime        @default(now())
+    updated_at         DateTime        @updatedAt
+    cuadreOperacion    CuadreOperacion @relation(fields: [cuadreOperacionId], references: [id])
+
+    @@map("cuadre_op_dolares")
+}
+
+model CuadreOperacionSoles {
+    id                 Int             @id @default(autoincrement())
+    cuadreOperacionId  Int
+    fecha_pen          DateTime
+    descripcion_op_pen String          @db.VarChar(500)
+    monto_pen          Float
+    referencia_pen     String          @db.VarChar(500)
+    diferencia_pen     Float
+    created_at         DateTime        @default(now())
+    updated_at         DateTime        @updatedAt
+    cuadreOperacion    CuadreOperacion @relation(fields: [cuadreOperacionId], references: [id])
+
+    @@map("cuadre_op_soles")
+}
+
+model TipoCambioOperacion {
+    id        Int        @id @default(autoincrement())
+    compra    Float
+    venta     Float
+    spread    Float
+    promedio  Float
+    operacion Operacion? @relation("OperacionTipoCambio")
+
+    @@map("op_tipocambio")
+}
+
+model FlujoFondosOperacion {
+    id        Int        @id @default(autoincrement())
+    montoUSD  Float
+    montoPEN  Float
+    operacion Operacion? @relation("OperacionFlujoFondos")
+
+    @@map("op_flujofondos")
+}
+
+model RendimientoOperacion {
+    id        Int        @id @default(autoincrement())
+    forzado   Float
+    medio     Float
+    esperado  Float
+    operacion Operacion? @relation("OperacionRendimiento")
+
+    @@map("op_rendimiento")
+}
+
+model MovimientoFondosOperacion {
+    id        Int        @id @default(autoincrement())
+    compraUSD Float
+    ventaUSD  Float
+    operacion Operacion? @relation("OperacionMovimientoFondos")
+
+    @@map("op_movimientofondos")
+}
+
+model SaldoFinalOperacion {
+    id        Int        @id @default(autoincrement())
+    montoUSD  Float
+    montoPEN  Float
+    operacion Operacion? @relation("OperacionSaldoFinal")
+
+    @@map("op_saldofinal")
+}
+
+model ResultadoOperacion {
+    id        Int        @id @default(autoincrement())
+    simple    Float
+    estricto  Float
+    potencial Float
+    operacion Operacion? @relation("OperacionResultado")
+
+    @@map("op_resultado")
+}
+
+//***************************** *********** ***************//
+
+/**
+ * *************** CUADRE DE GASTOS ****************
+ */
+
+enum TipoGasto {
+    MANTENIMIENTO
+    FUNCIONAMIENTO
+    PERSONAL
+    DIVERSOS_OPERATIVOS
+    IMPUESTOS
+    INTERESES_RENTA_SEGUNDA
+    OVERNIGHT_BCP
+    ITF
+    PRESTAMOS_SIN_INTERES
+    PERSONAL_PERSONAS
+    GASTO_LEASING
+    GASTO_PRESTAMO
+    OTROS_GASTOS
+    OTROS_GASTOS_1
+    OTROS_GASTOS_2
+    OTROS_GASTOS_3
+    OTROS_GASTOS_4
+    OTROS_GASTOS_5
+    OTROS_GASTOS_6
+    OTROS_GASTOS_7
+}
+
+model TipoCambioMes {
+    id    Int   @id @default(autoincrement())
+    valor Float
+    mes   Int
+    anio  Int
+}
+
+model Gasto {
+    id           Int               @id @default(autoincrement())
+    fecha        DateTime
+    descripcion  String
+    monto        Decimal           @db.Decimal(12, 2)
+    referencia   String?
+    tipoMoneda   String            @default("PEN")
+    clase        String?
+    concepto     String?
+    tipoGasto    TipoGasto
+    isRecopilado Boolean           @default(false)
+    recopilado   RecopiladoGastos?
+    createdAt    DateTime          @default(now())
+    updatedAt    DateTime          @updatedAt
+
+    @@map("gasto")
+}
+
+model PrestamoOperacion {
+    id                  Int             @id @default(autoincrement())
+    numero_operacion    Int             @default(1)
+    numero_prestamo     String?
+    capital_soles       Decimal?        @db.Decimal(10, 2)
+    capital_dolares     Decimal?        @db.Decimal(10, 2)
+    moneda              Moneda
+    tasa                Float
+    devolucion          DateTime
+    fechaInicial        DateTime
+    dias                Int
+    estatus             EstatusPrestamo @default(PENDIENTE)
+    interes             Decimal         @db.Decimal(10, 2)
+    cobroTotal          Decimal         @db.Decimal(10, 2)
+    tc                  Decimal         @db.Decimal(10, 2)
+    potencial           Decimal         @db.Decimal(10, 2)
+    igv                 Decimal         @db.Decimal(10, 2)
+    rendimiento         Decimal         @db.Decimal(10, 2)
+    ganancia            Decimal         @default(0.00) @db.Decimal(10, 2)
+    cuadre              Decimal?        @default(0) @db.Decimal(10, 2)
+    detraccion          Decimal         @db.Decimal(10, 2)
+    ///* Es el estado entre la factura o la boleta
+    ///* Si lo cambian de nombre para más legibilidad, bacán
+    factura             String?
+    usuarioId           String
+    createdAt           DateTime        @default(now())
+    updatedAt           DateTime        @updatedAt
+    codigoFacturaBoleta String?
+    tipo                String          @default("BOLETA") @db.VarChar(20)
+    esAntiguo           Boolean         @default(false)
+    usuario             Usuario         @relation(fields: [usuarioId], references: [id])
+
+    cuadrePrestamo   CuadrePrestamo[]
+    PrestamoAnulados PrestamoAnulados[]
+    LeasingAnulados  LeasingAnulados[]
+
+    @@index([usuarioId], map: "op_prestamo_usuarioId_fkey")
+    @@map("prestamo")
+}
+
+model PrestamoAnulados {
+    id                  Int               @id @default(autoincrement())
+    codigoFacturaBoleta String
+    factura             String
+    prestamoId          Int
+    prestamo            PrestamoOperacion @relation(fields: [prestamoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@map("prestamo_anulados")
+}
+
+model CuadrePrestamo {
+    id Int @id @default(autoincrement())
+
+    prestamoId Int               @unique
+    prestamo   PrestamoOperacion @relation(fields: [prestamoId], references: [id])
+
+    salidasPrestamo      PagosPrestamo[]
+    devolucionesPrestamo DevolucionesPrestamo[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("pres_cuadre")
+}
+
+/**
+ * Salidas Prestamo
+ */
+model PagosPrestamo {
+    id               Int            @id @default(autoincrement())
+    cuadrePrestamoId Int
+    descripcion      String
+    moonto           Decimal        @db.Decimal(10, 2)
+    diferencia       Decimal        @db.Decimal(10, 2)
+    cuadrePrestamo   CuadrePrestamo @relation(fields: [cuadrePrestamoId], references: [id])
+    fecha            DateTime       @default(now())
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("pres_pagos")
+}
+
+model DevolucionesPrestamo {
+    id               Int      @id @default(autoincrement())
+    cuadrePrestamoId Int
+    deposito         String
+    pagado           Decimal  @db.Decimal(10, 2)
+    tc               Int?
+    montoFinal       Decimal  @db.Decimal(10, 2)
+    referencia       Int?
+    diferencia       Decimal  @db.Decimal(10, 2)
+    fecha            DateTime @default(now())
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    cuadrePrestamo CuadrePrestamo @relation(fields: [cuadrePrestamoId], references: [id])
+
+    @@map("pres_devoluciones")
+}
+
+enum TipoOperacion {
+    COMPRA
+    VENTA
+}
+
+enum Moneda {
+    USD @map("US$")
+    PEN @map("S/.")
+}
+
+enum EstatusPrestamo {
+    PAGADO    @map("PAGADO")
+    PENDIENTE @map("PENDIENTE")
+    A_PLAZO   @map("A PLAZO")
+}
+
+/**
+ * ------------------------------------ LEASING ------------------------------------
+ */
+
+model LeasingOperacion {
+    id                  Int             @id @default(autoincrement())
+    usuarioId           String
+    codSer              String
+    numero              Int
+    numero_actual       Int             @default(0)
+    numero_leasing      String
+    precio              Decimal         @db.Decimal(10, 2)
+    fecha_inicial       DateTime
+    fecha_final         DateTime
+    dias                Int
+    tipo                String          @default("BOLETA")
+    estatus             EstatusPrestamo @default(PENDIENTE)
+    cobroTotal          Decimal         @db.Decimal(10, 2)
+    tc                  Decimal         @db.Decimal(10, 2)
+    potencial           Decimal         @db.Decimal(10, 2)
+    igv                 Decimal         @db.Decimal(10, 2)
+    rendimiento         Decimal         @db.Decimal(10, 2)
+    detraccion          Decimal         @db.Decimal(10, 2)
+    codigoFacturaBoleta String?
+    descripcion         String?         @db.LongText
+    factura             String?
+    cuadreLeasing       CuadreLeasing?  @relation("CuadreLeasing")
+
+    createdAt       DateTime          @default(now())
+    updatedAt       DateTime          @updatedAt
+    usuario         Usuario           @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+    leasingAnulados LeasingAnulados[]
+
+    @@map("leasing")
+}
+
+model LeasingAnulados {
+    id                  Int                @id @default(autoincrement())
+    codigoFacturaBoleta String
+    factura             String
+    leasingId           Int
+    leasing             LeasingOperacion   @relation(fields: [leasingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    PrestamoOperacion   PrestamoOperacion? @relation(fields: [prestamoOperacionId], references: [id])
+    prestamoOperacionId Int?
+
+    @@map("lea_anulados")
+}
+
+model CuadreLeasing {
+    id Int @id @default(autoincrement())
+
+    leasingId Int?              @unique
+    leasing   LeasingOperacion? @relation("CuadreLeasing", fields: [leasingId], references: [id])
+    fecha     DateTime          @default(now())
+    createdAt DateTime          @default(now())
+    updatedAt DateTime          @updatedAt
+
+    pagosRealizados PagoRealizadoLeasing[]
+
+    @@map("lea_cuadre")
+}
+
+model PagoRealizadoLeasing {
+    id Int @id @default(autoincrement())
+
+    cuadreLeasingId Int
+    cuadreLeasing   CuadreLeasing? @relation(fields: [cuadreLeasingId], references: [id])
+    createdAt       DateTime       @default(now())
+    updatedAt       DateTime       @updatedAt
+
+    detraccion  DetraccionLeasing?
+    pagoLeasing PagoLeasing?
+
+    @@map("lea_pago_realizado")
+}
+
+model DetraccionLeasing {
+    id                       Int                   @id @default(autoincrement())
+    deposito                 String
+    pagado                   Decimal               @db.Decimal(10, 2)
+    tc                       Int?
+    montoFinal               Decimal               @db.Decimal(10, 2)
+    referencia               String?
+    fecha                    DateTime              @default(now())
+    diferencia               Decimal               @db.Decimal(10, 2)
+    CuadreLeasing            PagoRealizadoLeasing? @relation(fields: [cuadreLeasingRealizadoId], references: [id])
+    cuadreLeasingRealizadoId Int?                  @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("lea_detraccion")
+}
+
+model PagoLeasing {
+    id         Int      @id @default(autoincrement())
+    deposito   String
+    pagado     Decimal  @db.Decimal(10, 2)
+    tc         Int?
+    montoFinal Decimal  @db.Decimal(10, 2)
+    referencia String?
+    fecha      DateTime @default(now())
+    diferencia Decimal  @db.Decimal(10, 2)
+
+    CuadreLeasing            PagoRealizadoLeasing? @relation(fields: [cuadreLeasingRealizadoId], references: [id])
+    cuadreLeasingRealizadoId Int?                  @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("lea_pago")
+}
+
+model FacturacionOperacion {
+    id          Int        @id @default(autoincrement())
+    unit        Decimal    @db.Decimal(10, 2)
+    glosa       String     @db.MediumText
+    op          Int
+    tipo        String     @db.VarChar(20)
+    accion      String     @db.VarChar(20)
+    monto       Decimal    @db.Decimal(10, 2)
+    tc          Decimal    @db.Decimal(10, 2)
+    entrega     Decimal    @db.Decimal(10, 2)
+    m1          String     @db.VarChar(20)
+    recibe      Decimal    @db.Decimal(10, 2)
+    m2          String     @db.VarChar(20)
+    operacionId Int        @unique
+    fecha       DateTime   @default(now())
+    operacion   Operacion? @relation(fields: [operacionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+    usuarioId String
+    usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+
+    cuadreFacturacion CuadreFacturacion[]
+
+    @@map("facturacion")
+}
+
+model CuadreFacturacion {
+    id           Int    @id @default(autoincrement())
+    difFecha     String
+    difMonto     String
+    difDocumento String
+
+    facturacionId Int
+    facturacion   FacturacionOperacion @relation(fields: [facturacionId], references: [id])
+
+    fechaCuadre    String
+    docCuadre      String
+    numeroCuadre   String
+    clienteCuadre  String
+    rucCuadre      String
+    vendedorCuadre String?
+    subtotalCuadre Decimal  @db.Decimal(10, 2)
+    igvCuadre      Decimal? @db.Decimal(10, 2)
+    totalCuadre    Decimal  @db.Decimal(10, 2)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("fact_cuadre")
+}
+
+model RecopiladoGastos {
+    id         Int       @id @default(autoincrement())
+    nombre     String
+    precio     Decimal   @db.Decimal(10, 2)
+    gastoId    Int?      @unique
+    mes        Int
+    anio       Int
+    tipo_gasto TipoGasto
+    gasto      Gasto?    @relation(fields: [gastoId], references: [id], onDelete: Cascade)
+
+    @@map("gast_recopilacion")
+}
+
+model Flujo {
+    id        Int       @id @default(autoincrement())
+    dia       Int
+    mes       Int?
+    anio      Int?
+    monto     Float?
+    tc        Float
+    tipoFlujo TipoFlujo
+
+    ingresos              Float?
+    ingresosPorDivisas    Float?
+    ingresosPorPrestamos  Float?
+    ingresosPorLeasing    Float?
+    interesesPorInversion Float?
+    consultoria           Float?
+
+    gastos        Float?
+    personal      Personal[]
+    personalTotal Float?
+    cts           Float?
+    eps           Float?
+
+    serviciosOperativos Float?
+    internet            Float?
+    oficina             Float?
+    celular             Float?
+    factElectronica     Float?
+    contabilidad        Float?
+    gestionRiesgo       Float?
+    marketingComercial  Float?
+
+    servciosStaff      Float?
+    combustible        Float?
+    alquilerVehiculos  Float?
+    gastosExtras       Float?
+    viajesEventosOtros Float?
+
+    gastosBancarios       Float?
+    itfSoles              Float?
+    itfDolares            Float?
+    mantSoles             Float?
+    mantDolares           Float?
+    interbancarioSoles    Float?
+    interbancariosDolares Float?
+
+    serviciosFondos      Float?
+    interesFondosSoles   Float?
+    interesFondosDolares Float?
+
+    otrosGastosTotal      Float?
+    impuestosDetracciones Float?
+    otrosGastos           Float?
+
+    utilidadOperativa Float?
+    impuestos         Float?
+
+    utilidadNeta Float?
+    flujoCaja    Float?
+
+    capitalTrabajo Float?
+
+    flujoCajaLibre Float?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("flujo")
+}
+
+enum TipoFlujo {
+    PRESUPUESTO
+    REAL_TOTAL
+    REAL_DIVISA
+    REAL_PRESTAMO
+    CONSULTORIA
+    LEASING
+}
+
+model PorcentajeFlujo {
+    id   Int @id @default(autoincrement())
+    anio Int
+
+    porcentajePersonal  Float?
+    porcentajeServicios Float?
+
+    porcentajeServiciosStaff  Float?
+    porcentajeGastosBancarios Float?
+    porcentajeServiciosFondos Float?
+    porcentajeOtrosGastos     Float?
+    porcentajeImpuestos       Float?
+    tipoFlujo                 TipoFlujo
+
+    @@map("flujo_porcentaje")
+}
+
+model Personal {
+    id      Int    @id @default(autoincrement())
+    nombre  String
+    monto   Float
+    anio    Int
+    mes     Int
+    flujo   Flujo? @relation(fields: [flujoId], references: [id])
+    flujoId Int?
+
+    @@map("flujo_pers")
+}
