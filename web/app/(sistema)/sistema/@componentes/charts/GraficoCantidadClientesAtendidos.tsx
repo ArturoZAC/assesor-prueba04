@@ -1,7 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartConfig,
@@ -61,12 +67,16 @@ export default function GraficoCantidadClientesAtendidos({
                       const str = String(value);
                       const firstLetter = str.charAt(0).toUpperCase();
                       const rest = str.slice(1);
-                      return (firstLetter + rest).slice(0, 1);
+                      return (firstLetter + rest).slice(0, 3);
                     }}
                   />
                   <YAxis />
                   <ChartTooltip
                     cursor={false}
+                    labelFormatter={(label) =>
+                      String(label).charAt(0).toUpperCase() +
+                      String(label).slice(1)
+                    }
                     content={<ChartTooltipContent className="bg-white-main" />}
                   />
                   <Line

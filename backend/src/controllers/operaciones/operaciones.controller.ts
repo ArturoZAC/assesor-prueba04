@@ -17,23 +17,32 @@ import { MonthlyTotalOperacion } from "../../interfaces/operacion.interface";
 import prisma from "../../config/database";
 import { formatearNumeroDecimal } from "../../logic/formatearNumeroDecimal";
 import { guardarError } from "../../logic/guardarErrores";
+import { limpiarPrecision, redondearParaBD } from "../../utils/precision";
 
 // const redondear = (valor: number) => parseFloat(valor.toFixed(10));
 
 export function redondearComoExcel(num: number, decimales: number) {
-  /*
   const factor = Math.pow(10, decimales);
-  return Math.round(num * factor) / factor;
-  */
-  const factor = Math.pow(10, decimales);
-  const adjustedNum = num + (num > 0 ? Number.EPSILON : -Number.EPSILON);
 
-  const roundedValue = Math.round(adjustedNum * factor) / factor;
-  return parseFloat(roundedValue.toFixed(decimales));
-  /*
-   const roundedString = num.toFixed(decimales);
-   return parseFloat(roundedString);
-   */
+  // Escalamos
+  let scaled = num * factor;
+
+  // Parte decimal exacta en binario
+  const decimal = Math.abs(scaled - Math.trunc(scaled));
+
+  // Tolerancia dinámica basada en magnitud del número
+  const tolerance = Number.EPSILON * Math.max(1, Math.abs(scaled)) * 10;
+
+  // Si la parte decimal está casi en .5, lo forzamos a .5 exacto
+  if (Math.abs(decimal - 0.5) < tolerance) {
+    // Redondeo tipo Excel
+    scaled = scaled > 0 ? Math.ceil(scaled) : Math.floor(scaled);
+  } else {
+    scaled = Math.round(scaled);
+  }
+
+  const result = scaled / factor;
+  return parseFloat(result.toFixed(decimales));
 }
 
 const calcularUSD = (
@@ -43,39 +52,56 @@ const calcularUSD = (
   venta: number,
   montoUSD: number
 ) => {
-  const tProm = Number(promedio);
-  const tCompra = Number(compra);
-  const tVenta = Number(venta);
+  // TC con 4 decimales de precisión
+  const tProm = parseFloat(Number(promedio).toFixed(4));
+  const tCompra = parseFloat(Number(compra).toFixed(4));
+  const tVenta = parseFloat(Number(venta).toFixed(4));
+
+  let resultado = 0;
 
   switch (tipo) {
     case "promedio":
-      return montoUSD * tProm;
+      resultado = montoUSD * tProm;
+      break;
     case "estricto":
-      return montoUSD * (montoUSD >= 0 ? tCompra : tVenta);
+      resultado = montoUSD * (montoUSD >= 0 ? tCompra : tVenta);
+      break;
     case "potencial":
-      return montoUSD * (montoUSD >= 0 ? tVenta : tCompra);
+      resultado = montoUSD * (montoUSD >= 0 ? tVenta : tCompra);
+      break;
   }
+
+  return limpiarPrecision(resultado);
 };
 
 export const registrarOperacion = async (req: any, res: any) => {
   try {
-    const {
-      fecha,
-      usuarioId,
-      tipo,
-      dolares,
-      compra,
-      venta,
-      spread,
-      promedio,
-      montoUSD,
-      montoPEN,
-      movimiento_compraUSD,
-      movimiento_ventaUSD,
-      t,
-    } = req.body;
+    const { fecha, usuarioId, tipo, dolares, compra, venta, t } = req.body;
 
-    // Los registros de FlujoFondos y Movimiento se crearán usando nested create en la operación
+    // LIMPIAR VALORES DE ENTRADA
+    const dolaresLimpio = limpiarPrecision(Number(dolares));
+
+    // TC con 4 decimales de precisión
+    const compraLimpio = parseFloat(Number(compra).toFixed(4));
+    const ventaLimpio = parseFloat(Number(venta).toFixed(4));
+    const spreadLimpio = parseFloat((ventaLimpio - compraLimpio).toFixed(4));
+    const promedioLimpio = parseFloat(
+      ((ventaLimpio + compraLimpio) / 2).toFixed(4)
+    );
+
+    // CALCULAR FLUJO DE FONDOS con TC de 4 decimales
+    const montoUSDLimpio =
+      tipo === "COMPRA"
+        ? limpiarPrecision(dolaresLimpio)
+        : limpiarPrecision(-dolaresLimpio);
+
+    const montoPENLimpio =
+      tipo === "COMPRA"
+        ? limpiarPrecision(-dolaresLimpio * compraLimpio)
+        : limpiarPrecision(dolaresLimpio * ventaLimpio);
+
+    const movimientoCompraLimpio = tipo === "COMPRA" ? dolaresLimpio : 0;
+    const movimientoVentaLimpio = tipo === "VENTA" ? dolaresLimpio : 0;
 
     const ultimoRegistro = await prisma.operacion.findFirst({
       orderBy: {
@@ -91,31 +117,56 @@ export const registrarOperacion = async (req: any, res: any) => {
       },
     });
 
-    // Calcular valores para los registros relacionados
-    const saldoFinalMontoUSD = (ultimoRegistro?.saldoFinal?.montoUSD ?? 0) + montoUSD;
-    const saldoFinalMontoPEN = (ultimoRegistro?.saldoFinal?.montoPEN ?? 0) + montoPEN;
-
-    const resultadoSimple = Number(
-      calcularUSD("promedio", promedio, compra, venta, saldoFinalMontoUSD) + saldoFinalMontoPEN
+    // Calcular saldos finales
+    const saldoFinalMontoUSD = limpiarPrecision(
+      (ultimoRegistro?.saldoFinal?.montoUSD ?? 0) + montoUSDLimpio
     );
 
-    const resultadoEstricto = Number(
-      calcularUSD("estricto", promedio, compra, venta, saldoFinalMontoUSD) + saldoFinalMontoPEN
+    const saldoFinalMontoPEN = limpiarPrecision(
+      (ultimoRegistro?.saldoFinal?.montoPEN ?? 0) + montoPENLimpio
     );
 
-    const resultadoPotencial = Number(
-      calcularUSD("potencial", promedio, compra, venta, saldoFinalMontoUSD) + saldoFinalMontoPEN
+    // Calcular resultados
+    const resultadoSimple = limpiarPrecision(
+      calcularUSD(
+        "promedio",
+        promedioLimpio,
+        compraLimpio,
+        ventaLimpio,
+        saldoFinalMontoUSD
+      ) + saldoFinalMontoPEN
     );
 
-    const rendimientoForzado = Number(
+    const resultadoEstricto = limpiarPrecision(
+      calcularUSD(
+        "estricto",
+        promedioLimpio,
+        compraLimpio,
+        ventaLimpio,
+        saldoFinalMontoUSD
+      ) + saldoFinalMontoPEN
+    );
+
+    const resultadoPotencial = limpiarPrecision(
+      calcularUSD(
+        "potencial",
+        promedioLimpio,
+        compraLimpio,
+        ventaLimpio,
+        saldoFinalMontoUSD
+      ) + saldoFinalMontoPEN
+    );
+
+    // Calcular rendimientos
+    const rendimientoForzado = limpiarPrecision(
       resultadoEstricto - (ultimoRegistro?.resultado?.estricto ?? 0)
     );
 
-    const rendimientoMedio = Number(
-      resultadoSimple - (Number(ultimoRegistro?.resultado?.simple) ?? 0)
+    const rendimientoMedio = limpiarPrecision(
+      resultadoSimple - (ultimoRegistro?.resultado?.simple ?? 0)
     );
 
-    const rendimientoEsperado = Number(
+    const rendimientoEsperado = limpiarPrecision(
       resultadoPotencial - (ultimoRegistro?.resultado?.potencial ?? 0)
     );
 
@@ -124,58 +175,55 @@ export const registrarOperacion = async (req: any, res: any) => {
     });
 
     const nuevoNumero = (ultimaOperacion?.numero ?? 11999) + 1;
-    console.log(nuevoNumero);
 
-    // Usar transacción para crear todos los registros en el orden correcto
+    // Usar transacción para crear todos los registros
     const operacion = await prisma.$transaction(async (tx) => {
-      // Crear registros relacionados primero
       const tipoCambio = await tx.tipoCambioOperacion.create({
         data: {
-          compra: Number(compra),
-          venta: Number(venta),
-          spread: Number(spread),
-          promedio: Number(promedio),
+          compra: compraLimpio, // 4 decimales
+          venta: ventaLimpio, // 4 decimales
+          spread: spreadLimpio, // 4 decimales
+          promedio: promedioLimpio, // 4 decimales
         },
       });
 
       const flujoFondos = await tx.flujoFondosOperacion.create({
         data: {
-          montoPEN: Number(montoPEN),
-          montoUSD: Number(montoUSD),
+          montoPEN: redondearParaBD(montoPENLimpio),
+          montoUSD: redondearParaBD(montoUSDLimpio),
         },
       });
 
       const movimiento = await tx.movimientoFondosOperacion.create({
         data: {
-          compraUSD: Number(movimiento_compraUSD),
-          ventaUSD: Number(movimiento_ventaUSD),
+          compraUSD: redondearParaBD(movimientoCompraLimpio),
+          ventaUSD: redondearParaBD(movimientoVentaLimpio),
         },
       });
 
       const saldoFinal = await tx.saldoFinalOperacion.create({
         data: {
-          montoUSD: saldoFinalMontoUSD,
-          montoPEN: saldoFinalMontoPEN,
+          montoUSD: redondearParaBD(saldoFinalMontoUSD),
+          montoPEN: redondearParaBD(saldoFinalMontoPEN),
         },
       });
 
       const resultado = await tx.resultadoOperacion.create({
         data: {
-          simple: resultadoSimple,
-          estricto: resultadoEstricto,
-          potencial: resultadoPotencial,
+          simple: redondearParaBD(resultadoSimple),
+          estricto: redondearParaBD(resultadoEstricto),
+          potencial: redondearParaBD(resultadoPotencial),
         },
       });
 
       const rendimiento = await tx.rendimientoOperacion.create({
         data: {
-          forzado: rendimientoForzado,
-          medio: rendimientoMedio,
-          esperado: rendimientoEsperado,
+          forzado: redondearParaBD(rendimientoForzado),
+          medio: redondearParaBD(rendimientoMedio),
+          esperado: redondearParaBD(rendimientoEsperado),
         },
       });
 
-      // Crear la operación principal conectando todos los registros
       return await tx.operacion.create({
         data: {
           t: String(t),
@@ -187,7 +235,7 @@ export const registrarOperacion = async (req: any, res: any) => {
             },
           },
           tipo,
-          dolares,
+          dolares: redondearParaBD(dolaresLimpio),
           tipoCambio: { connect: { id: tipoCambio.id } },
           flujoFondos: { connect: { id: flujoFondos.id } },
           movimiento: { connect: { id: movimiento.id } },
@@ -199,34 +247,34 @@ export const registrarOperacion = async (req: any, res: any) => {
     });
 
     /************************** CREAR FACTURACION **************************/
-
     const glosa = ` OP-${operacion.numero} - ASSESOR ${
       tipo === "COMPRA" ? "COMPRA" : "VENDE"
-    } ${Number(Math.abs(montoUSD)).toFixed(2)} USD. TIPO DE CAMBIO: ${
-      tipo === "COMPRA" ? compra : venta
+    } ${Math.abs(montoUSDLimpio).toFixed(2)} USD. TIPO DE CAMBIO: ${
+      tipo === "COMPRA" ? compraLimpio.toFixed(4) : ventaLimpio.toFixed(4)
     }. CLIENTE ENVIA: ${
       tipo === "COMPRA"
-        ? Number(Math.abs(montoUSD)).toFixed(2)
-        : Number(Math.abs(montoPEN)).toFixed(2)
+        ? Math.abs(montoUSDLimpio).toFixed(2)
+        : Math.abs(montoPENLimpio).toFixed(2)
     } ${tipo === "COMPRA" ? "USD" : "PEN"}. CLIENTE RECIBE: ${
       tipo === "COMPRA"
-        ? Number(Math.abs(dolares) * Math.abs(compra)).toFixed(2)
-        : Number(Math.abs(dolares)).toFixed(2)
+        ? (Math.abs(dolaresLimpio) * Math.abs(compraLimpio)).toFixed(2)
+        : Math.abs(dolaresLimpio).toFixed(2)
     } ${tipo === "COMPRA" ? "PEN" : "USD"}.`;
 
     const facturacion = await prisma.facturacionOperacion.create({
       data: {
-        unit: Number(Number(montoPEN).toFixed(2)),
+        unit: Number(montoPENLimpio.toFixed(2)),
         glosa,
         op: operacion.numero,
         tipo,
         accion: tipo === "COMPRA" ? "COMPRA" : "VENDE",
-        entrega: tipo === "COMPRA" ? montoUSD : montoPEN,
+        entrega: tipo === "COMPRA" ? montoUSDLimpio : montoPENLimpio,
         m1: tipo === "COMPRA" ? "USD" : "PEN",
         m2: tipo === "COMPRA" ? "PEN" : "USD",
-        recibe: tipo === "COMPRA" ? dolares * compra : dolares,
-        monto: dolares,
-        tc: tipo === "COMPRA" ? compra : venta,
+        recibe:
+          tipo === "COMPRA" ? dolaresLimpio * compraLimpio : dolaresLimpio,
+        monto: dolaresLimpio,
+        tc: tipo === "COMPRA" ? compraLimpio : ventaLimpio,
         fecha: new Date(fecha),
         operacion: {
           connect: {
@@ -274,6 +322,20 @@ export const editarOperacion = async (req: any, res: any) => {
       movimiento_ventaUSD,
       t,
     } = req.body;
+
+    // LIMPIAR TODOS LOS VALORES DE ENTRADA
+    const dolaresLimpio = limpiarPrecision(Number(dolares));
+    const compraLimpio = limpiarPrecision(Number(compra));
+    const ventaLimpio = limpiarPrecision(Number(venta));
+    const spreadLimpio = limpiarPrecision(Number(spread));
+    const promedioLimpio = limpiarPrecision(Number(promedio));
+    const montoUSDLimpio = limpiarPrecision(Number(montoUSD));
+    const montoPENLimpio = limpiarPrecision(Number(montoPEN));
+    const movimientoCompraLimpio = limpiarPrecision(
+      Number(movimiento_compraUSD)
+    );
+    const movimientoVentaLimpio = limpiarPrecision(Number(movimiento_ventaUSD));
+
     const operacionExistente = id
       ? await prisma.operacion.findUnique({
           where: { id },
@@ -287,10 +349,13 @@ export const editarOperacion = async (req: any, res: any) => {
           },
         })
       : null;
-    console.log("OPERACION: ", operacionExistente);
+
+    // Buscar el registro anterior
     const ultimoRegistro = await prisma.operacion.findFirst({
       where: {
-        numero: Number(operacionExistente?.numero ?? 1) - 1,
+        numero: {
+          lt: Number(operacionExistente?.numero ?? numero),
+        },
       },
       orderBy: { numero: "desc" },
       include: {
@@ -302,149 +367,170 @@ export const editarOperacion = async (req: any, res: any) => {
         rendimiento: true,
       },
     });
-    console.log("ULTIMO REGISTRO: ", ultimoRegistro);
 
-    if (!ultimoRegistro) {
+    if (!ultimoRegistro && (operacionExistente?.numero ?? numero) > 12754) {
       return res.status(404).json({
         error: `La operación ${
-          Number(operacionExistente?.numero) - 1
-        } no existe, ingrese su operación faltante por importación masiva para evitar problemas y edite denuevo`,
+          Number(operacionExistente?.numero ?? numero) - 1
+        } no existe, ingrese su operación faltante por importación masiva para evitar problemas y edite de nuevo`,
       });
     }
-    const ventaRedon = Number(venta);
-    const compraRedon = Number(compra);
-    const promedioRedon = Number(promedio);
-    const spreadRedon = Number(spread);
 
-    const montoPenRedon = Number(montoPEN);
-    const montoUSDRedon = Number(montoUSD);
-
-    const movimiento_compraUSDRedon = Number(movimiento_compraUSD);
-    const movimiento_ventaUSDRedon = Number(movimiento_ventaUSD);
-
-    // --- Crear o actualizar Tipo de Cambio ---
+    // Crear o actualizar Tipo de Cambio
     const tipoCambio = operacionExistente?.tipoCambio
       ? await prisma.tipoCambioOperacion.update({
           where: { id: operacionExistente.tipoCambio.id },
           data: {
-            compra: compraRedon,
-            venta: ventaRedon,
-            spread: spreadRedon,
-            promedio: promedioRedon,
+            compra: redondearParaBD(compraLimpio),
+            venta: redondearParaBD(ventaLimpio),
+            spread: redondearParaBD(spreadLimpio),
+            promedio: redondearParaBD(promedioLimpio),
           },
         })
       : await prisma.tipoCambioOperacion.create({
           data: {
-            compra: compraRedon,
-            venta: ventaRedon,
-            spread: ventaRedon,
-            promedio: promedioRedon,
+            compra: redondearParaBD(compraLimpio),
+            venta: redondearParaBD(ventaLimpio),
+            spread: redondearParaBD(spreadLimpio),
+            promedio: redondearParaBD(promedioLimpio),
           },
         });
 
-    // --- Crear o actualizar Flujo de Fondos ---
+    // Crear o actualizar Flujo de Fondos
     const flujoFondos = operacionExistente?.flujoFondos
       ? await prisma.flujoFondosOperacion.update({
           where: { id: operacionExistente.flujoFondos.id },
-          data: { montoPEN: montoPenRedon, montoUSD: montoUSDRedon },
+          data: {
+            montoPEN: redondearParaBD(montoPENLimpio),
+            montoUSD: redondearParaBD(montoUSDLimpio),
+          },
         })
       : await prisma.flujoFondosOperacion.create({
-          data: { montoPEN: montoPenRedon, montoUSD: montoUSDRedon },
+          data: {
+            montoPEN: redondearParaBD(montoPENLimpio),
+            montoUSD: redondearParaBD(montoUSDLimpio),
+          },
         });
 
-    // --- Crear o actualizar Movimiento de Fondos ---
+    // Crear o actualizar Movimiento de Fondos
     const movimiento = operacionExistente?.movimiento
       ? await prisma.movimientoFondosOperacion.update({
           where: { id: operacionExistente.movimiento.id },
           data: {
-            compraUSD: movimiento_compraUSDRedon,
-            ventaUSD: movimiento_ventaUSDRedon,
+            compraUSD: redondearParaBD(movimientoCompraLimpio),
+            ventaUSD: redondearParaBD(movimientoVentaLimpio),
           },
         })
       : await prisma.movimientoFondosOperacion.create({
           data: {
-            compraUSD: movimiento_compraUSDRedon,
-            ventaUSD: movimiento_ventaUSDRedon,
+            compraUSD: redondearParaBD(movimientoCompraLimpio),
+            ventaUSD: redondearParaBD(movimientoVentaLimpio),
           },
         });
+
+    // Calcular saldos finales
+    const saldoFinalMontoUSD = limpiarPrecision(
+      (ultimoRegistro?.saldoFinal?.montoUSD ?? 0) + montoUSDLimpio
+    );
+
+    const saldoFinalMontoPEN = limpiarPrecision(
+      (ultimoRegistro?.saldoFinal?.montoPEN ?? 0) + montoPENLimpio
+    );
 
     const saldoFinal = operacionExistente?.saldoFinal
       ? await prisma.saldoFinalOperacion.update({
           where: { id: operacionExistente.saldoFinal.id },
           data: {
-            montoUSD: (ultimoRegistro?.saldoFinal?.montoUSD ?? 0) + montoUSD,
-            montoPEN: (ultimoRegistro?.saldoFinal?.montoPEN ?? 0) + montoPEN,
+            montoUSD: redondearParaBD(saldoFinalMontoUSD),
+            montoPEN: redondearParaBD(saldoFinalMontoPEN),
           },
         })
       : await prisma.saldoFinalOperacion.create({
           data: {
-            montoUSD: (ultimoRegistro?.saldoFinal?.montoUSD ?? 0) + montoUSD,
-            montoPEN: (ultimoRegistro?.saldoFinal?.montoPEN ?? 0) + montoPEN,
+            montoUSD: redondearParaBD(saldoFinalMontoUSD),
+            montoPEN: redondearParaBD(saldoFinalMontoPEN),
           },
         });
 
-    console.log(
-      "RESULTADO OPERACION SIMPLE :",
-      calcularUSD("promedio", promedio, compra, venta, saldoFinal.montoUSD),
-      saldoFinal.montoPEN
+    // Calcular resultados
+    const resultadoSimple = limpiarPrecision(
+      calcularUSD(
+        "promedio",
+        promedioLimpio,
+        compraLimpio,
+        ventaLimpio,
+        saldoFinalMontoUSD
+      ) + saldoFinalMontoPEN
     );
-    console.log(
-      "RESULTADO RESULTADO DE LA OPERACION :",
-      calcularUSD("promedio", promedio, compra, venta, saldoFinal.montoUSD) + saldoFinal.montoPEN
+
+    const resultadoEstricto = limpiarPrecision(
+      calcularUSD(
+        "estricto",
+        promedioLimpio,
+        compraLimpio,
+        ventaLimpio,
+        saldoFinalMontoUSD
+      ) + saldoFinalMontoPEN
     );
+
+    const resultadoPotencial = limpiarPrecision(
+      calcularUSD(
+        "potencial",
+        promedioLimpio,
+        compraLimpio,
+        ventaLimpio,
+        saldoFinalMontoUSD
+      ) + saldoFinalMontoPEN
+    );
+
     const resultado = operacionExistente?.resultado
       ? await prisma.resultadoOperacion.update({
           where: { id: operacionExistente.resultado.id },
           data: {
-            simple: Number(
-              calcularUSD("promedio", promedio, compra, venta, saldoFinal.montoUSD) +
-                saldoFinal.montoPEN
-            ),
-            estricto: Number(
-              calcularUSD("estricto", promedio, compra, venta, saldoFinal.montoUSD) +
-                saldoFinal.montoPEN
-            ),
-            potencial: Number(
-              calcularUSD("potencial", promedio, compra, venta, saldoFinal.montoUSD) +
-                saldoFinal.montoPEN
-            ),
+            simple: redondearParaBD(resultadoSimple),
+            estricto: redondearParaBD(resultadoEstricto),
+            potencial: redondearParaBD(resultadoPotencial),
           },
         })
       : await prisma.resultadoOperacion.create({
           data: {
-            simple: Number(
-              calcularUSD("promedio", promedio, compra, venta, saldoFinal.montoUSD) +
-                saldoFinal.montoPEN
-            ),
-            estricto: Number(
-              calcularUSD("estricto", promedio, compra, venta, saldoFinal.montoUSD) +
-                saldoFinal.montoPEN
-            ),
-            potencial: Number(
-              calcularUSD("potencial", promedio, compra, venta, saldoFinal.montoUSD) +
-                saldoFinal.montoPEN
-            ),
+            simple: redondearParaBD(resultadoSimple),
+            estricto: redondearParaBD(resultadoEstricto),
+            potencial: redondearParaBD(resultadoPotencial),
           },
         });
+
+    // Calcular rendimientos
+    const rendimientoForzado = limpiarPrecision(
+      resultadoEstricto - (ultimoRegistro?.resultado?.estricto ?? 0)
+    );
+
+    const rendimientoMedio = limpiarPrecision(
+      resultadoSimple - (ultimoRegistro?.resultado?.simple ?? 0)
+    );
+
+    const rendimientoEsperado = limpiarPrecision(
+      resultadoPotencial - (ultimoRegistro?.resultado?.potencial ?? 0)
+    );
 
     const rendimiento = operacionExistente?.rendimiento
       ? await prisma.rendimientoOperacion.update({
           where: { id: operacionExistente.rendimiento.id },
           data: {
-            forzado: Number(resultado.estricto - Number(ultimoRegistro?.resultado?.estricto)),
-            medio: Number(resultado.simple - Number(ultimoRegistro?.resultado?.simple)),
-            esperado: Number(resultado.potencial - Number(ultimoRegistro?.resultado?.potencial)),
+            forzado: redondearParaBD(rendimientoForzado),
+            medio: redondearParaBD(rendimientoMedio),
+            esperado: redondearParaBD(rendimientoEsperado),
           },
         })
       : await prisma.rendimientoOperacion.create({
           data: {
-            forzado: Number(resultado.estricto - (ultimoRegistro?.resultado?.estricto ?? 0)),
-            medio: Number(resultado.simple - (ultimoRegistro?.resultado?.simple ?? 0)),
-            esperado: Number(resultado.potencial - (ultimoRegistro?.resultado?.potencial ?? 0)),
+            forzado: redondearParaBD(rendimientoForzado),
+            medio: redondearParaBD(rendimientoMedio),
+            esperado: redondearParaBD(rendimientoEsperado),
           },
         });
 
-    // --- Crear o actualizar operación principal ---
+    // Crear o actualizar operación principal
     const operacion = id
       ? await prisma.operacion.update({
           where: { id },
@@ -453,7 +539,7 @@ export const editarOperacion = async (req: any, res: any) => {
             numero,
             t: String(t),
             tipo,
-            dolares: Number(dolares),
+            dolares: redondearParaBD(dolaresLimpio),
             usuario: { connect: { id: usuarioId } },
             tipoCambio: { connect: { id: tipoCambio.id } },
             flujoFondos: { connect: { id: flujoFondos.id } },
@@ -477,7 +563,7 @@ export const editarOperacion = async (req: any, res: any) => {
             numero,
             tipo,
             t: String(t),
-            dolares,
+            dolares: redondearParaBD(dolaresLimpio),
             usuario: { connect: { id: usuarioId } },
             tipoCambio: { connect: { id: tipoCambio.id } },
             flujoFondos: { connect: { id: flujoFondos.id } },
@@ -495,7 +581,12 @@ export const editarOperacion = async (req: any, res: any) => {
             resultado: true,
           },
         });
-    console.log("OPERACION ACTUALIZADA: ", operacion);
+
+    // Recalcular todas las operaciones posteriores
+    if (id) {
+      await recalcularOperacionesPosteriores(operacion.numero);
+    }
+
     /** EDITAR FACTURACIÓN  */
     const facturacion = await prisma.facturacionOperacion.findFirst({
       where: {
@@ -505,12 +596,16 @@ export const editarOperacion = async (req: any, res: any) => {
 
     const glosa = ` OP-${operacion.numero} - ASSESOR ${
       tipo === "COMPRA" ? "COMPRA" : "VENDE"
-    } ${Math.abs(montoUSD)} USD. TIPO DE CAMBIO: ${
-      tipo === "COMPRA" ? Math.abs(compra) : Math.abs(venta)
-    }. CLIENTE ENVIA: ${tipo === "COMPRA" ? Math.abs(montoUSD) : Math.abs(montoPEN)} ${
-      tipo === "COMPRA" ? "USD" : "PEN"
-    }. CLIENTE RECIBE: ${
-      tipo === "COMPRA" ? Math.abs(dolares) * Math.abs(compra) : Math.abs(dolares)
+    } ${Math.abs(montoUSDLimpio).toFixed(2)} USD. TIPO DE CAMBIO: ${
+      tipo === "COMPRA" ? compraLimpio.toFixed(3) : ventaLimpio.toFixed(3)
+    }. CLIENTE ENVIA: ${
+      tipo === "COMPRA"
+        ? Math.abs(montoUSDLimpio).toFixed(2)
+        : Math.abs(montoPENLimpio).toFixed(2)
+    } ${tipo === "COMPRA" ? "USD" : "PEN"}. CLIENTE RECIBE: ${
+      tipo === "COMPRA"
+        ? (Math.abs(dolaresLimpio) * Math.abs(compraLimpio)).toFixed(2)
+        : Math.abs(dolaresLimpio).toFixed(2)
     } ${tipo === "COMPRA" ? "PEN" : "USD"}.`;
 
     if (facturacion) {
@@ -523,14 +618,15 @@ export const editarOperacion = async (req: any, res: any) => {
           fecha: new Date(fecha),
           op: operacion.numero,
           tipo,
-          unit: Number(Number(flujoFondos.montoPEN).toFixed(2)),
+          unit: Number(montoPENLimpio.toFixed(2)),
           accion: tipo === "COMPRA" ? "COMPRA" : "VENTA",
-          entrega: tipo === "COMPRA" ? flujoFondos.montoUSD : flujoFondos.montoPEN,
+          entrega: tipo === "COMPRA" ? montoUSDLimpio : montoPENLimpio,
           m1: tipo === "COMPRA" ? "USD" : "PEN",
           m2: tipo === "COMPRA" ? "PEN" : "USD",
-          recibe: tipo === "COMPRA" ? dolares * tipoCambio.compra : dolares,
-          monto: dolares,
-          tc: tipo === "COMPRA" ? tipoCambio.compra : tipoCambio.venta,
+          recibe:
+            tipo === "COMPRA" ? dolaresLimpio * compraLimpio : dolaresLimpio,
+          monto: dolaresLimpio,
+          tc: tipo === "COMPRA" ? compraLimpio : ventaLimpio,
           operacion: {
             connect: {
               id: operacion.id,
@@ -546,18 +642,19 @@ export const editarOperacion = async (req: any, res: any) => {
     } else {
       await prisma.facturacionOperacion.create({
         data: {
-          unit: Number(Number(flujoFondos.montoPEN).toFixed(2)),
+          unit: Number(montoPENLimpio.toFixed(2)),
           fecha: new Date(fecha),
           glosa,
           op: operacion.numero,
           tipo,
           accion: tipo === "COMPRA" ? "COMPRA" : "VENTA",
-          entrega: tipo === "COMPRA" ? flujoFondos.montoUSD : flujoFondos.montoPEN,
+          entrega: tipo === "COMPRA" ? montoUSDLimpio : montoPENLimpio,
           m1: tipo === "COMPRA" ? "USD" : "PEN",
           m2: tipo === "COMPRA" ? "PEN" : "USD",
-          recibe: tipo === "COMPRA" ? dolares * tipoCambio.compra : dolares,
-          monto: dolares,
-          tc: tipo === "COMPRA" ? tipoCambio.compra : tipoCambio.venta,
+          recibe:
+            tipo === "COMPRA" ? dolaresLimpio * compraLimpio : dolaresLimpio,
+          monto: dolaresLimpio,
+          tc: tipo === "COMPRA" ? compraLimpio : ventaLimpio,
           operacion: {
             connect: {
               id: operacion.id,
@@ -573,15 +670,151 @@ export const editarOperacion = async (req: any, res: any) => {
     }
 
     res.status(200).json({
-      message: id ? "Operación actualizada correctamente" : "Operación registrada correctamente",
+      message: id
+        ? "Operación actualizada correctamente"
+        : "Operación registrada correctamente",
       operacion,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error al procesar la operación" });
   } finally {
-    prisma.$disconnect();
+    await prisma.$disconnect();
   }
+};
+
+// ✅ Función auxiliar ACTUALIZADA para recalcular operaciones posteriores
+const recalcularOperacionesPosteriores = async (
+  numeroOperacionEditada: number
+) => {
+  console.log(
+    `🔄 Recalculando operaciones desde ${numeroOperacionEditada + 1}...`
+  );
+
+  const operacionEditada = await prisma.operacion.findFirst({
+    where: { numero: numeroOperacionEditada },
+    include: {
+      tipoCambio: true,
+      saldoFinal: true,
+      resultado: true,
+    },
+  });
+
+  if (!operacionEditada) {
+    console.error("❌ No se encontró la operación editada");
+    return;
+  }
+
+  const operacionesPosteriores = await prisma.operacion.findMany({
+    where: {
+      numero: {
+        gt: numeroOperacionEditada,
+      },
+    },
+    include: {
+      tipoCambio: true,
+      flujoFondos: true,
+      saldoFinal: true,
+      resultado: true,
+      rendimiento: true,
+    },
+    orderBy: { numero: "asc" },
+  });
+
+  if (operacionesPosteriores.length === 0) {
+    console.log("✅ No hay operaciones posteriores para recalcular");
+    return;
+  }
+
+  // Usar los valores de la operación editada como base
+  let saldoAcumuladoUSD = limpiarPrecision(
+    operacionEditada.saldoFinal?.montoUSD ?? 0
+  );
+  let saldoAcumuladoPEN = limpiarPrecision(
+    operacionEditada.saldoFinal?.montoPEN ?? 0
+  );
+  let resultadoSimpleAnterior = limpiarPrecision(
+    operacionEditada.resultado?.simple ?? 0
+  );
+  let resultadoEstrictoAnterior = limpiarPrecision(
+    operacionEditada.resultado?.estricto ?? 0
+  );
+  let resultadoPotencialAnterior = limpiarPrecision(
+    operacionEditada.resultado?.potencial ?? 0
+  );
+
+  for (const op of operacionesPosteriores) {
+    const flujoUSD = limpiarPrecision(op.flujoFondos?.montoUSD ?? 0);
+    const flujoPEN = limpiarPrecision(op.flujoFondos?.montoPEN ?? 0);
+    const tcCompra = limpiarPrecision(op.tipoCambio?.compra ?? 0);
+    const tcVenta = limpiarPrecision(op.tipoCambio?.venta ?? 0);
+    const tcPromedio = limpiarPrecision(op.tipoCambio?.promedio ?? 0);
+
+    saldoAcumuladoUSD = limpiarPrecision(saldoAcumuladoUSD + flujoUSD);
+    saldoAcumuladoPEN = limpiarPrecision(saldoAcumuladoPEN + flujoPEN);
+
+    const resultadoSimple = limpiarPrecision(
+      saldoAcumuladoUSD * tcPromedio + saldoAcumuladoPEN
+    );
+
+    const resultadoEstricto = limpiarPrecision(
+      (saldoAcumuladoUSD >= 0
+        ? saldoAcumuladoUSD * tcCompra
+        : saldoAcumuladoUSD * tcVenta) + saldoAcumuladoPEN
+    );
+
+    const resultadoPotencial = limpiarPrecision(
+      (saldoAcumuladoUSD >= 0
+        ? saldoAcumuladoUSD * tcVenta
+        : saldoAcumuladoUSD * tcCompra) + saldoAcumuladoPEN
+    );
+
+    const rendimientoForzado = limpiarPrecision(
+      resultadoEstricto - resultadoEstrictoAnterior
+    );
+    const rendimientoMedio = limpiarPrecision(
+      resultadoSimple - resultadoSimpleAnterior
+    );
+    const rendimientoEsperado = limpiarPrecision(
+      resultadoPotencial - resultadoPotencialAnterior
+    );
+
+    console.log(`  ➡️ Recalculando OP-${op.numero}`);
+
+    await prisma.$transaction([
+      prisma.saldoFinalOperacion.update({
+        where: { id: op.saldoFinalId! },
+        data: {
+          montoUSD: redondearParaBD(saldoAcumuladoUSD),
+          montoPEN: redondearParaBD(saldoAcumuladoPEN),
+        },
+      }),
+      prisma.resultadoOperacion.update({
+        where: { id: op.resultadoId! },
+        data: {
+          simple: redondearParaBD(resultadoSimple),
+          estricto: redondearParaBD(resultadoEstricto),
+          potencial: redondearParaBD(resultadoPotencial),
+        },
+      }),
+      prisma.rendimientoOperacion.update({
+        where: { id: op.rendimientoId! },
+        data: {
+          forzado: redondearParaBD(rendimientoForzado),
+          medio: redondearParaBD(rendimientoMedio),
+          esperado: redondearParaBD(rendimientoEsperado),
+        },
+      }),
+    ]);
+
+    resultadoSimpleAnterior = resultadoSimple;
+    resultadoEstrictoAnterior = resultadoEstricto;
+    resultadoPotencialAnterior = resultadoPotencial;
+  }
+
+  console.log(
+    `✅ ${operacionesPosteriores.length} operaciones posteriores recalculadas`
+  );
 };
 
 export const obtenerOperaciones = async (req: any, res: any) => {
@@ -818,9 +1051,9 @@ export const obtenerUltimaOperacionEditar = async (
     });
 
     if (!ultimaOperacion) {
-      return res
-        .status(404)
-        .json({ error: "No está el prestamo anterior a este, importe la operación" });
+      return res.status(404).json({
+        error: "No está el prestamo anterior a este, importe la operación",
+      });
     }
 
     res.status(201).json({ ultimaOperacion });
@@ -956,7 +1189,10 @@ export const getOperacionesPorMes = async (req: any, res: any) => {
   }
 };
 
-export async function obtenerGraficaGeneracionCaja(req: any, res: any): Promise<any | undefined> {
+export async function obtenerGraficaGeneracionCaja(
+  req: any,
+  res: any
+): Promise<any | undefined> {
   try {
     const anio = req.query.anio || new Date().getUTCFullYear();
 
@@ -1022,7 +1258,9 @@ export async function obtenerGraficaGeneracionCaja(req: any, res: any): Promise<
     });
   } catch (error) {
     console.error("Error al obtener el rendimiento mensual:", error);
-    res.status(500).json({ message: "Error al obtener el rendimiento mensual" });
+    res
+      .status(500)
+      .json({ message: "Error al obtener el rendimiento mensual" });
   } finally {
     prisma.$disconnect();
   }
@@ -1034,10 +1272,12 @@ export const exportarOperacionesExcel = async (req: any, res: any) => {
   try {
     const { tipo } = req.params;
 
-    const whereCondition = tipo.toLowerCase() === "todos" ? {} : { tipo: tipo.toUpperCase() };
+    const whereCondition =
+      tipo.toLowerCase() === "todos" ? {} : { tipo: tipo.toUpperCase() };
 
     const operaciones = await prisma.operacion.findMany({
       where: whereCondition,
+      orderBy: { numero: "asc" },
       include: {
         usuario: true,
         tipoCambio: true,
@@ -1075,39 +1315,117 @@ export const exportarOperacionesExcel = async (req: any, res: any) => {
       "Resultado Potencial",
     ];
 
+    // ✅ EXPORTAR VALORES REALES (4 decimales para TC, completos para el resto)
     const rows = operaciones.map((op) => [
       op.fecha.toISOString().split("T")[0],
       op.t,
       op.numero,
-      op.usuario.nombres + " " + op.usuario.apellido_paterno + " " + op.usuario.apellido_materno,
+      `${op.usuario.nombres} ${op.usuario.apellido_paterno} ${op.usuario.apellido_materno}`.trim(),
       op.usuario.documento,
       op.tipo,
-      redondearComoExcel(op.dolares, 2) ?? "",
-      redondearComoExcel(op.tipoCambio?.compra, 3) ?? "",
-      redondearComoExcel(op.tipoCambio?.venta, 3) ?? "",
-      redondearComoExcel(op.tipoCambio?.spread, 3) ?? "",
-      redondearComoExcel(op.tipoCambio?.promedio, 3) ?? "",
-      redondearComoExcel(op.flujoFondos?.montoUSD, 2) ?? "",
-      redondearComoExcel(op.flujoFondos?.montoPEN, 2) ?? "",
-      redondearComoExcel(Number(op.rendimiento?.forzado || 0), 2) ?? "",
-      redondearComoExcel(Number(op.rendimiento?.medio || 0), 2) ?? "",
-      redondearComoExcel(Number(op.rendimiento?.esperado || 0), 2) ?? "",
-      redondearComoExcel(op.movimiento?.compraUSD, 2) ?? "",
-      redondearComoExcel(op.movimiento?.ventaUSD, 2) ?? "",
-      redondearComoExcel(Number(op.saldoFinal?.montoUSD || 0), 2) ?? "",
-      redondearComoExcel(Number(op.saldoFinal?.montoPEN || 0), 2) ?? "",
-      redondearComoExcel(Number(op.resultado?.simple || 0), 2) ?? "",
-      redondearComoExcel(Number(op.resultado?.estricto || 0), 2) ?? "",
-      redondearComoExcel(Number(op.resultado?.potencial || 0), 2) ?? "",
+      Number(op.dolares) || 0,
+      Number(op.tipoCambio?.compra) || 0, // 4 decimales internos
+      Number(op.tipoCambio?.venta) || 0, // 4 decimales internos
+      Number(op.tipoCambio?.spread) || 0, // 4 decimales internos
+      Number(op.tipoCambio?.promedio) || 0, // 4 decimales internos
+      Number(op.flujoFondos?.montoUSD) || 0,
+      Number(op.flujoFondos?.montoPEN) || 0,
+      Number(op.rendimiento?.forzado) || 0,
+      Number(op.rendimiento?.medio) || 0,
+      Number(op.rendimiento?.esperado) || 0,
+      Number(op.movimiento?.compraUSD) || 0,
+      Number(op.movimiento?.ventaUSD) || 0,
+      Number(op.saldoFinal?.montoUSD) || 0,
+      Number(op.saldoFinal?.montoPEN) || 0,
+      Number(op.resultado?.simple) || 0,
+      Number(op.resultado?.estricto) || 0,
+      Number(op.resultado?.potencial) || 0,
     ]);
 
     const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+
+    // ✅ APLICAR FORMATO VISUAL
+    // TC: 3 decimales visuales (pero valor interno es 4 decimales)
+    // Montos: 2 decimales visuales
+    const range = XLSX.utils.decode_range(worksheet["!ref"] || "A1");
+
+    for (let row = 1; row <= range.e.r; row++) {
+      // Columna G: Dólares → 2 decimales
+      const dolaresCellAddress = `G${row + 1}`;
+      if (
+        worksheet[dolaresCellAddress] &&
+        typeof worksheet[dolaresCellAddress].v === "number"
+      ) {
+        worksheet[dolaresCellAddress].z = "0.00";
+      }
+
+      // Columnas H, I, J, K: TC → 3 decimales VISUALES (4 internos)
+      ["H", "I", "J", "K"].forEach((col) => {
+        const cellAddress = `${col}${row + 1}`;
+        if (
+          worksheet[cellAddress] &&
+          typeof worksheet[cellAddress].v === "number"
+        ) {
+          worksheet[cellAddress].z = "0.000"; // 3 decimales visuales
+        }
+      });
+
+      // Resto de columnas numéricas → 2 decimales
+      ["L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W"].forEach(
+        (col) => {
+          const cellAddress = `${col}${row + 1}`;
+          if (
+            worksheet[cellAddress] &&
+            typeof worksheet[cellAddress].v === "number"
+          ) {
+            worksheet[cellAddress].z = "0.00";
+          }
+        }
+      );
+    }
+
+    // Ajustar ancho de columnas
+    worksheet["!cols"] = [
+      { wch: 12 }, // A - Fecha
+      { wch: 5 }, // B - T
+      { wch: 10 }, // C - Número
+      { wch: 40 }, // D - Cliente
+      { wch: 15 }, // E - Documento
+      { wch: 10 }, // F - Tipo
+      { wch: 12 }, // G - Dólares
+      { wch: 12 }, // H - TC Compra
+      { wch: 12 }, // I - TC Venta
+      { wch: 12 }, // J - TC Spread
+      { wch: 12 }, // K - TC Promedio
+      { wch: 12 }, // L - Flujo USD
+      { wch: 12 }, // M - Flujo PEN
+      { wch: 18 }, // N - Rend. Forzado
+      { wch: 18 }, // O - Rend. Medio
+      { wch: 18 }, // P - Rend. Esperado
+      { wch: 12 }, // Q - Compra USD
+      { wch: 12 }, // R - Venta USD
+      { wch: 15 }, // S - Saldo Final USD
+      { wch: 15 }, // T - Saldo Final PEN
+      { wch: 16 }, // U - Resultado Simple
+      { wch: 16 }, // V - Resultado Estricto
+      { wch: 17 }, // W - Resultado Potencial
+    ];
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Operaciones");
 
-    const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
+    const buffer = XLSX.write(workbook, {
+      type: "buffer",
+      bookType: "xlsx",
+      cellStyles: true,
+    });
 
-    res.setHeader("Content-Disposition", "attachment; filename=operaciones.xlsx");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=operaciones_${tipo}_${
+        new Date().toISOString().split("T")[0]
+      }.xlsx`
+    );
     res.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -1116,11 +1434,17 @@ export const exportarOperacionesExcel = async (req: any, res: any) => {
     res.send(buffer);
   } catch (error) {
     console.error("Error exportando operaciones:", error);
-    res.status(500).json({ message: "Error exportando operaciones" });
+    res.status(500).json({
+      message: "Error exportando operaciones",
+      error: error instanceof Error ? error.message : "Error desconocido",
+    });
   }
 };
 
-export async function sacarGraficaSpread(req: Request, res: Response): Promise<any | undefined> {
+export async function sacarGraficaSpread(
+  req: Request,
+  res: Response
+): Promise<any | undefined> {
   try {
     const operaciones = await prisma.operacion.findMany({
       include: {
@@ -1142,7 +1466,10 @@ export async function sacarGraficaSpread(req: Request, res: Response): Promise<a
 
     return res.status(200).json(resultado);
   } catch (error) {
-    console.error("Error al obtener las operaciones con fecha y spread:", error);
+    console.error(
+      "Error al obtener las operaciones con fecha y spread:",
+      error
+    );
     return res.status(500).json({
       error: "No se pudo sacar la información",
     });
@@ -1151,7 +1478,10 @@ export async function sacarGraficaSpread(req: Request, res: Response): Promise<a
   }
 }
 
-export async function sacarGraficaPromedio(req: Request, res: Response): Promise<any | undefined> {
+export async function sacarGraficaPromedio(
+  req: Request,
+  res: Response
+): Promise<any | undefined> {
   try {
     const operaciones = await prisma.operacion.findMany({
       include: {
@@ -1173,7 +1503,10 @@ export async function sacarGraficaPromedio(req: Request, res: Response): Promise
 
     return res.status(200).json(resultado);
   } catch (error) {
-    console.error("Error al obtener las operaciones con fecha y promedio:", error);
+    console.error(
+      "Error al obtener las operaciones con fecha y promedio:",
+      error
+    );
     return res.status(500).json({
       error: "No se pudo sacar la información",
     });
@@ -1189,7 +1522,11 @@ export async function obtenerTotalOperacionCaclulo(
   let year: number;
   const yearParam = req.query.year;
 
-  if (yearParam && typeof yearParam === "string" && !isNaN(parseInt(yearParam, 10))) {
+  if (
+    yearParam &&
+    typeof yearParam === "string" &&
+    !isNaN(parseInt(yearParam, 10))
+  ) {
     year = parseInt(yearParam, 10);
   } else {
     year = new Date().getFullYear();
@@ -1358,9 +1695,12 @@ export async function obtenerTotalOperacionCaclulo(
       const monthName = new Intl.DateTimeFormat("es-PE", {
         month: "long",
       }).format(startDate);
-      const compraPromedioMes = operacionesMes > 0 ? compraSum / operacionesMes : 0;
-      const ventaPromedioMes = operacionesMes > 0 ? ventaSum / operacionesMes : 0;
-      const spreadPromedioMes = operacionesMes > 0 ? spreadSum / operacionesMes : 0;
+      const compraPromedioMes =
+        operacionesMes > 0 ? compraSum / operacionesMes : 0;
+      const ventaPromedioMes =
+        operacionesMes > 0 ? ventaSum / operacionesMes : 0;
+      const spreadPromedioMes =
+        operacionesMes > 0 ? spreadSum / operacionesMes : 0;
       const promedioMes = operacionesMes > 0 ? promedioSum / operacionesMes : 0;
 
       if (hasNonZeroTotal) {
@@ -1411,7 +1751,8 @@ export async function obtenerTotalOperacionCaclulo(
     }
     const accumulatedPromedioCompra =
       totalOperaciones > 0 ? accumulatedCompra / totalOperaciones : 0;
-    const accumulatedPromedioVenta = totalOperaciones > 0 ? accumulatedVenta / totalOperaciones : 0;
+    const accumulatedPromedioVenta =
+      totalOperaciones > 0 ? accumulatedVenta / totalOperaciones : 0;
     const accumulatedPromedioSpread =
       totalOperaciones > 0 ? accumulatedSpread / totalOperaciones : 0;
     const accumulatedPromedioPromedio =
@@ -1464,10 +1805,14 @@ export async function obtenerTotalOperacionCaclulo(
     });
 
     const totalOperacionesHoy = operacionesHoy.length;
-    const promedioCompraHoy = totalOperacionesHoy > 0 ? compraHoy / totalOperacionesHoy : 0;
-    const promedioVentaHoy = totalOperacionesHoy > 0 ? ventaHoy / totalOperacionesHoy : 0;
-    const promedioSpreadHoy = totalOperacionesHoy > 0 ? spreadHoy / totalOperacionesHoy : 0;
-    const promedioPromedioHoy = totalOperacionesHoy > 0 ? promedioHoy / totalOperacionesHoy : 0;
+    const promedioCompraHoy =
+      totalOperacionesHoy > 0 ? compraHoy / totalOperacionesHoy : 0;
+    const promedioVentaHoy =
+      totalOperacionesHoy > 0 ? ventaHoy / totalOperacionesHoy : 0;
+    const promedioSpreadHoy =
+      totalOperacionesHoy > 0 ? spreadHoy / totalOperacionesHoy : 0;
+    const promedioPromedioHoy =
+      totalOperacionesHoy > 0 ? promedioHoy / totalOperacionesHoy : 0;
 
     const hoyObject = {
       fecha: "Hoy",
@@ -1490,7 +1835,9 @@ export async function obtenerTotalOperacionCaclulo(
       ventaUSDMov: Number(ventaUSDMovHoy.toFixed(2)),
       montoUSDSaldo: Number(montoUSDSaldoHoy.toFixed(2)),
       montoPENSaldo: Number(montoPENSaldoHoy.toFixed(2)),
-      equilibrio: Number(Number(accumulatedCompraUSDMov) - Number(accumulatedVentaUSDMov)),
+      equilibrio: Number(
+        Number(accumulatedCompraUSDMov) - Number(accumulatedVentaUSDMov)
+      ),
       operacionesMes: totalOperacionesHoy,
     };
     monthlyTotals.push(hoyObject);
@@ -1500,7 +1847,10 @@ export async function obtenerTotalOperacionCaclulo(
 
     res.status(200).json([...monthlyTotals, accumulatedObject]);
   } catch (error) {
-    console.error(`Error fetching Operacion totals for year ${year} with accumulated:`, error);
+    console.error(
+      `Error fetching Operacion totals for year ${year} with accumulated:`,
+      error
+    );
     res.status(500).json({
       error: `Failed to fetch Operacion totals for year ${year} with accumulated`,
     });
@@ -1625,7 +1975,9 @@ export async function sacarGraficaMontosCambiados(
     });
   } catch (error) {
     console.error("Error al obtener el rendimiento mensual:", error);
-    return res.status(500).json({ message: "Error al obtener el rendimiento mensual" });
+    return res
+      .status(500)
+      .json({ message: "Error al obtener el rendimiento mensual" });
   } finally {
     await prisma.$disconnect();
   }
@@ -1812,13 +2164,20 @@ export async function sacarGraficaRendimientosMensuales(
     const respuesta = nombresMeses.map((nombreMes) => {
       const totalDolares = resultadosPorMes[nombreMes]?.totalDolares || 0;
       const forzadoRatio =
-        totalDolares > 0 ? resultadosPorMes[nombreMes]?.totalForzado / totalDolares : 0;
+        totalDolares > 0
+          ? resultadosPorMes[nombreMes]?.totalForzado / totalDolares
+          : 0;
       const medioRatio =
-        totalDolares > 0 ? resultadosPorMes[nombreMes]?.totalMedio / totalDolares : 0;
+        totalDolares > 0
+          ? resultadosPorMes[nombreMes]?.totalMedio / totalDolares
+          : 0;
       const esperadoRatio =
-        totalDolares > 0 ? resultadosPorMes[nombreMes]?.totalEsperado / totalDolares : 0;
+        totalDolares > 0
+          ? resultadosPorMes[nombreMes]?.totalEsperado / totalDolares
+          : 0;
 
-      const fechaCapitalizada = nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
+      const fechaCapitalizada =
+        nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
 
       return {
         fecha: fechaCapitalizada,
@@ -1830,7 +2189,10 @@ export async function sacarGraficaRendimientosMensuales(
 
     res.status(200).json(respuesta);
   } catch (error) {
-    console.error("Error al calcular los ratios de rendimiento por mes:", error);
+    console.error(
+      "Error al calcular los ratios de rendimiento por mes:",
+      error
+    );
     res.status(500).json({
       message: "Error al calcular los ratios de rendimiento por mes",
     });
@@ -1863,13 +2225,17 @@ export async function sacarGraficaTicketPromedio(req: Request, res: Response) {
       "Diciembre",
     ];
 
-    const montoCambiado = await obtenerTotalOperacionCacluloFLUJO(String(anioActual));
+    const montoCambiado = await obtenerTotalOperacionCacluloFLUJO(
+      String(anioActual)
+    );
 
     meses.forEach((mes, index) => {
       promediosMensuales.push({
         fecha: mes,
         mensual: formatearNumeroDecimal(
-          montoCambiado[index]?.dolares / 1000 / montoCambiado[index]?.operacionesMes
+          montoCambiado[index]?.dolares /
+            1000 /
+            montoCambiado[index]?.operacionesMes
         ),
       });
     });
@@ -1927,7 +2293,12 @@ export async function sacarGraficaTicketPromedio(req: Request, res: Response) {
   }
 }
 
-const parseFlexible = (valor: any, campo: string, fila: number, errores: any[]): number => {
+const parseFlexible = (
+  valor: any,
+  campo: string,
+  fila: number,
+  errores: any[]
+): number => {
   if (valor === "" || valor === "-" || valor === undefined || valor === null) {
     return 0;
   }
@@ -2024,7 +2395,9 @@ export const importarOperacionesHandler = [
               mensaje: `Fecha inválida: "${row["fecha"]}"`,
             });
 
-            guardarError(`NO HAY FECHA en fila ${filaNum} en la operación ${filaNum}`);
+            guardarError(
+              `NO HAY FECHA en fila ${filaNum} en la operación ${filaNum}`
+            );
             continue;
           }
 
@@ -2070,17 +2443,37 @@ export const importarOperacionesHandler = [
 
           flujoFondos = await prisma.flujoFondosOperacion.create({
             data: {
-              montoUSD: parseFlexible(row["monto us$"], "Monto US$", filaNum, errores),
-              montoPEN: parseFlexible(row["monto s/."], "Monto S/.", filaNum, errores),
+              montoUSD: parseFlexible(
+                row["monto us$"],
+                "Monto US$",
+                filaNum,
+                errores
+              ),
+              montoPEN: parseFlexible(
+                row["monto s/."],
+                "Monto S/.",
+                filaNum,
+                errores
+              ),
             },
           });
           console.log("FLUJO FONDOS CREADO");
 
           rendimiento = await prisma.rendimientoOperacion.create({
             data: {
-              forzado: parseFlexible(row["forzado"], "Forzado", filaNum, errores),
+              forzado: parseFlexible(
+                row["forzado"],
+                "Forzado",
+                filaNum,
+                errores
+              ),
               medio: parseFlexible(row["medio"], "Medio", filaNum, errores),
-              esperado: parseFlexible(row["esperado"], "Esperado", filaNum, errores),
+              esperado: parseFlexible(
+                row["esperado"],
+                "Esperado",
+                filaNum,
+                errores
+              ),
             },
           });
 
@@ -2088,8 +2481,18 @@ export const importarOperacionesHandler = [
 
           movimiento = await prisma.movimientoFondosOperacion.create({
             data: {
-              compraUSD: parseFlexible(row["compra $"], "Compra $", filaNum, errores),
-              ventaUSD: parseFlexible(row["venta $"], "Venta $", filaNum, errores),
+              compraUSD: parseFlexible(
+                row["compra $"],
+                "Compra $",
+                filaNum,
+                errores
+              ),
+              ventaUSD: parseFlexible(
+                row["venta $"],
+                "Venta $",
+                filaNum,
+                errores
+              ),
             },
           });
 
@@ -2107,14 +2510,29 @@ export const importarOperacionesHandler = [
           resultado = await prisma.resultadoOperacion.create({
             data: {
               simple: parseFlexible(row["simple"], "Simple", filaNum, errores),
-              estricto: parseFlexible(row["estricto"], "Estricto", filaNum, errores),
-              potencial: parseFlexible(row["potencial"], "Potencial", filaNum, errores),
+              estricto: parseFlexible(
+                row["estricto"],
+                "Estricto",
+                filaNum,
+                errores
+              ),
+              potencial: parseFlexible(
+                row["potencial"],
+                "Potencial",
+                filaNum,
+                errores
+              ),
             },
           });
 
           console.log("RESULTADO OPERACION CREADO");
 
-          const dolares = parseFlexible(row["dolares"], "Dolares", filaNum, errores);
+          const dolares = parseFlexible(
+            row["dolares"],
+            "Dolares",
+            filaNum,
+            errores
+          );
 
           const operacionBuscada = await prisma.operacion.findFirst({
             where: {
@@ -2141,7 +2559,8 @@ export const importarOperacionesHandler = [
               fecha,
               t: String(parseFlexible(row["t"], "T", filaNum, errores) ?? ""),
               numero: filaNum,
-              tipo: row["tipo"]?.toLowerCase() === "compra" ? "COMPRA" : "VENTA",
+              tipo:
+                row["tipo"]?.toLowerCase() === "compra" ? "COMPRA" : "VENTA",
               dolares,
               usuarioId: usuario.id,
               tipoCambioId: tipoCambio.id,
@@ -2156,11 +2575,19 @@ export const importarOperacionesHandler = [
           const glosa = ` OP-${operacionCreada.numero} - ASSESOR ${
             operacionCreada.tipo === "COMPRA" ? "COMPRA" : "VENDE"
           } ${flujoFondos.montoUSD} USD. TIPO DE CAMBIO: ${
-            operacionCreada.tipo === "COMPRA" ? tipoCambio.compra : tipoCambio.venta
+            operacionCreada.tipo === "COMPRA"
+              ? tipoCambio.compra
+              : tipoCambio.venta
           }. CLIENTE ENVIA: ${
-            operacionCreada.tipo === "COMPRA" ? flujoFondos.montoUSD : flujoFondos.montoPEN
-          } ${operacionCreada.tipo === "COMPRA" ? "USD" : "PEN"}. CLIENTE RECIBE: ${
-            operacionCreada.tipo === "COMPRA" ? dolares * tipoCambio.compra : dolares
+            operacionCreada.tipo === "COMPRA"
+              ? flujoFondos.montoUSD
+              : flujoFondos.montoPEN
+          } ${
+            operacionCreada.tipo === "COMPRA" ? "USD" : "PEN"
+          }. CLIENTE RECIBE: ${
+            operacionCreada.tipo === "COMPRA"
+              ? dolares * tipoCambio.compra
+              : dolares
           } ${operacionCreada.tipo === "COMPRA" ? "PEN" : "USD"}.`;
 
           facturacionCreada = await prisma.facturacionOperacion.create({
@@ -2172,12 +2599,20 @@ export const importarOperacionesHandler = [
               tipo: operacionCreada.tipo,
               accion: operacionCreada.tipo === "COMPRA" ? "COMPRA" : "VENTA",
               entrega:
-                operacionCreada.tipo === "COMPRA" ? flujoFondos.montoUSD : flujoFondos.montoPEN,
+                operacionCreada.tipo === "COMPRA"
+                  ? flujoFondos.montoUSD
+                  : flujoFondos.montoPEN,
               m1: operacionCreada.tipo === "COMPRA" ? "USD" : "PEN",
               m2: operacionCreada.tipo === "COMPRA" ? "PEN" : "USD",
-              recibe: operacionCreada.tipo === "COMPRA" ? dolares * tipoCambio.compra : dolares,
+              recibe:
+                operacionCreada.tipo === "COMPRA"
+                  ? dolares * tipoCambio.compra
+                  : dolares,
               monto: dolares,
-              tc: operacionCreada.tipo === "COMPRA" ? tipoCambio.compra : tipoCambio.venta,
+              tc:
+                operacionCreada.tipo === "COMPRA"
+                  ? tipoCambio.compra
+                  : tipoCambio.venta,
               operacion: {
                 connect: {
                   id: operacionCreada.id,
@@ -2275,7 +2710,9 @@ export const importarOperacionesHandler = [
         });
       }
 
-      return res.status(200).json({ mensaje: "Operaciones importadas correctamente." });
+      return res
+        .status(200)
+        .json({ mensaje: "Operaciones importadas correctamente." });
     } catch (err) {
       console.log("Error procesando importación:", err);
       guardarError(`Error al procesar el archivo: ${err}`);
@@ -2312,14 +2749,38 @@ export const importarCuadresHandler = [
           // Datos de matching de la operación
           const fechaMatch = convertirFecha(row["fecha"]);
           const cliente = row["cliente"];
-          const tipo = row["tipo"]?.toLowerCase() === "compra" ? "COMPRA" : "VENTA";
-          const tcC = parseFlexible(row["tc c"], "TC C", raw._rowNum_ || 0, errores);
-          const tcV = parseFlexible(row["tc v"], "TC V", raw._rowNum_ || 0, errores);
-          const usd = parseFlexible(row["dolares"], "DOLARES", raw._rowNum_ || 0, errores);
-          const pen = parseFlexible(row["soles"], "SOLES", raw._rowNum_ || 0, errores);
+          const tipo =
+            row["tipo"]?.toLowerCase() === "compra" ? "COMPRA" : "VENTA";
+          const tcC = parseFlexible(
+            row["tc c"],
+            "TC C",
+            raw._rowNum_ || 0,
+            errores
+          );
+          const tcV = parseFlexible(
+            row["tc v"],
+            "TC V",
+            raw._rowNum_ || 0,
+            errores
+          );
+          const usd = parseFlexible(
+            row["dolares"],
+            "DOLARES",
+            raw._rowNum_ || 0,
+            errores
+          );
+          const pen = parseFlexible(
+            row["soles"],
+            "SOLES",
+            raw._rowNum_ || 0,
+            errores
+          );
 
           if (!fechaMatch || !cliente) {
-            errores.push({ fila: raw._rowNum_ || "?", mensaje: "Fecha o Cliente inválido" });
+            errores.push({
+              fila: raw._rowNum_ || "?",
+              mensaje: "Fecha o Cliente inválido",
+            });
             continue;
           }
 
@@ -2365,7 +2826,10 @@ export const importarCuadresHandler = [
         } else {
           // Fila de cuadre extra, usa el último cuadre creado
           if (!lastOperacionId) {
-            errores.push({ fila: raw._rowNum_ || "?", mensaje: "Cuadre sin operación previa" });
+            errores.push({
+              fila: raw._rowNum_ || "?",
+              mensaje: "Cuadre sin operación previa",
+            });
             continue;
           }
           // Obtener el último cuadre para esa operación
@@ -2391,14 +2855,17 @@ export const importarCuadresHandler = [
               cuadreOperacionId: currentCuadreId,
               fecha_usd: fechaUsd,
               descripcion_op_usd:
-                row["descripción operación_1"] || row["descripcion_operacion_usd"] || "",
+                row["descripción operación_1"] ||
+                row["descripcion_operacion_usd"] ||
+                "",
               monto_usd: parseFlexible(
                 row["monto dolares"],
                 "Monto DOLARES",
                 raw._rowNum_ || 0,
                 errores
               ),
-              referencia_usd: row["referencia2_1"] || row["referencia2_usd"] || "",
+              referencia_usd:
+                row["referencia2_1"] || row["referencia2_usd"] || "",
               diferencia_usd: parseFlexible(
                 row["dif_1"],
                 "Dif DOLARES",
@@ -2417,24 +2884,36 @@ export const importarCuadresHandler = [
               cuadreOperacionId: currentCuadreId,
               fecha_pen: fechaPen,
               descripcion_op_pen:
-                row["descripción operación_2"] || row["descripcion_operacion_pen"] || "",
+                row["descripción operación_2"] ||
+                row["descripcion_operacion_pen"] ||
+                "",
               monto_pen: parseFlexible(
                 row["monto soles"],
                 "Monto SOLES",
                 raw._rowNum_ || 0,
                 errores
               ),
-              referencia_pen: row["referencia2_2"] || row["referencia2_pen"] || "",
-              diferencia_pen: parseFlexible(row["dif_2"], "Dif SOLES", raw._rowNum_ || 0, errores),
+              referencia_pen:
+                row["referencia2_2"] || row["referencia2_pen"] || "",
+              diferencia_pen: parseFlexible(
+                row["dif_2"],
+                "Dif SOLES",
+                raw._rowNum_ || 0,
+                errores
+              ),
             },
           });
         }
       }
 
       if (errores.length) {
-        return res.status(400).json({ mensaje: "Algunos cuadres no se importaron", errores });
+        return res
+          .status(400)
+          .json({ mensaje: "Algunos cuadres no se importaron", errores });
       }
-      return res.status(200).json({ mensaje: "Cuadres importados correctamente" });
+      return res
+        .status(200)
+        .json({ mensaje: "Cuadres importados correctamente" });
     } catch (e) {
       console.error(e);
       return res.status(500).json({ error: "Error procesando el archivo" });
@@ -2448,7 +2927,11 @@ export async function obtenerTotalOperacionCacluloFLUJO(
 ): Promise<any | undefined> {
   let year: number;
 
-  if (yearParam && typeof yearParam === "string" && !isNaN(parseInt(yearParam, 10))) {
+  if (
+    yearParam &&
+    typeof yearParam === "string" &&
+    !isNaN(parseInt(yearParam, 10))
+  ) {
     year = parseInt(yearParam, 10);
   } else {
     year = new Date().getFullYear();
@@ -2552,9 +3035,12 @@ export async function obtenerTotalOperacionCacluloFLUJO(
       const monthName = new Intl.DateTimeFormat("es-PE", {
         month: "long",
       }).format(startDate);
-      const compraPromedioMes = operacionesMes > 0 ? compraSum / operacionesMes : 0;
-      const ventaPromedioMes = operacionesMes > 0 ? ventaSum / operacionesMes : 0;
-      const spreadPromedioMes = operacionesMes > 0 ? spreadSum / operacionesMes : 0;
+      const compraPromedioMes =
+        operacionesMes > 0 ? compraSum / operacionesMes : 0;
+      const ventaPromedioMes =
+        operacionesMes > 0 ? ventaSum / operacionesMes : 0;
+      const spreadPromedioMes =
+        operacionesMes > 0 ? spreadSum / operacionesMes : 0;
       const promedioMes = operacionesMes > 0 ? promedioSum / operacionesMes : 0;
 
       monthlyTotals.push({
@@ -2603,7 +3089,8 @@ export async function obtenerTotalOperacionCacluloFLUJO(
     }
     const accumulatedPromedioCompra =
       totalOperaciones > 0 ? accumulatedCompra / totalOperaciones : 0;
-    const accumulatedPromedioVenta = totalOperaciones > 0 ? accumulatedVenta / totalOperaciones : 0;
+    const accumulatedPromedioVenta =
+      totalOperaciones > 0 ? accumulatedVenta / totalOperaciones : 0;
     const accumulatedPromedioSpread =
       totalOperaciones > 0 ? accumulatedSpread / totalOperaciones : 0;
     const accumulatedPromedioPromedio =
@@ -2635,7 +3122,10 @@ export async function obtenerTotalOperacionCacluloFLUJO(
 
     return [...monthlyTotals, accumulatedObject];
   } catch (error) {
-    console.error(`Error fetching Operacion totals for year ${year} with accumulated:`, error);
+    console.error(
+      `Error fetching Operacion totals for year ${year} with accumulated:`,
+      error
+    );
   } finally {
     await prisma.$disconnect();
   }
@@ -2807,7 +3297,10 @@ interface TablaMes {
   resaltarFila: { active: boolean };
 }
 
-export async function obtenerTotalTablaAño(req: Request, res: Response): Promise<any | undefined> {
+export async function obtenerTotalTablaAño(
+  req: Request,
+  res: Response
+): Promise<any | undefined> {
   try {
     const meses = [
       "Enero",
@@ -2838,7 +3331,9 @@ export async function obtenerTotalTablaAño(req: Request, res: Response): Promis
           totalOperaciones:
             (resultadosClientes[index]?.empresasTotal || 0) +
             (resultadosClientes[index]?.clientesTotal || 0),
-          montos: montoCambiado[index]?.dolares ? montoCambiado[index]?.dolares / 1000 : 0,
+          montos: montoCambiado[index]?.dolares
+            ? montoCambiado[index]?.dolares / 1000
+            : 0,
           comprasTransferencias: montoCambiado[index]?.compraUSD
             ? montoCambiado[index]?.compraUSD / 1000
             : 0,
@@ -2847,10 +3342,16 @@ export async function obtenerTotalTablaAño(req: Request, res: Response): Promis
           segundoAcumulado: 0,
           segundoPorcentaje: 100,
           ticketPromedio: formatearNumeroDecimal(
-            montoCambiado[index]?.dolares / 1000 / montoCambiado[index]?.operacionesMes
+            montoCambiado[index]?.dolares /
+              1000 /
+              montoCambiado[index]?.operacionesMes
           ),
-          tipoCambioCompra: montoCambiado[index]?.compra ? montoCambiado[index]?.compra : 0,
-          tipoCambioVenta: montoCambiado[index]?.venta ? montoCambiado[index]?.venta : 0,
+          tipoCambioCompra: montoCambiado[index]?.compra
+            ? montoCambiado[index]?.compra
+            : 0,
+          tipoCambioVenta: montoCambiado[index]?.venta
+            ? montoCambiado[index]?.venta
+            : 0,
           totalClientesAtendidos: resultadosClientes[index]?.clientes || 0,
           totalEmpresasAtendidas: resultadosClientes[index]?.empresa || 0,
           ventasTransferencias: montoCambiado[index]?.ventaUSD
@@ -2876,25 +3377,42 @@ export async function obtenerTotalTablaAño(req: Request, res: Response): Promis
             ? formatearNumeroDecimal(montoCambiado[index]?.compraUSD / 1000)
             : 0,
           primerAcumulado: Math.round(
-            (montoCambiado[index]?.operacionesMes / montoCambiado[0]?.operacionesMes - 1) * 100
+            (montoCambiado[index]?.operacionesMes /
+              montoCambiado[0]?.operacionesMes -
+              1) *
+              100
           ),
           primerPorcentaje: Math.round(
-            (montoCambiado[index]?.operacionesMes / montoCambiado[index - 1]?.operacionesMes - 1) *
+            (montoCambiado[index]?.operacionesMes /
+              montoCambiado[index - 1]?.operacionesMes -
+              1) *
               100
           ),
           segundoAcumulado: Math.round(
-            (montoCambiado[index]?.dolares / 1000 / (montoCambiado[0]?.dolares / 1000) - 1) * 100
+            (montoCambiado[index]?.dolares /
+              1000 /
+              (montoCambiado[0]?.dolares / 1000) -
+              1) *
+              100
           ),
           segundoPorcentaje: Math.round(
-            (montoCambiado[index]?.dolares / 1000 / (montoCambiado[index - 1]?.dolares / 1000) -
+            (montoCambiado[index]?.dolares /
+              1000 /
+              (montoCambiado[index - 1]?.dolares / 1000) -
               1) *
               100
           ),
           ticketPromedio: formatearNumeroDecimal(
-            montoCambiado[index]?.dolares / 1000 / montoCambiado[index]?.operacionesMes
+            montoCambiado[index]?.dolares /
+              1000 /
+              montoCambiado[index]?.operacionesMes
           ),
-          tipoCambioCompra: montoCambiado[index]?.compra ? montoCambiado[index]?.compra : 0,
-          tipoCambioVenta: montoCambiado[index]?.venta ? montoCambiado[index]?.venta : 0,
+          tipoCambioCompra: montoCambiado[index]?.compra
+            ? montoCambiado[index]?.compra
+            : 0,
+          tipoCambioVenta: montoCambiado[index]?.venta
+            ? montoCambiado[index]?.venta
+            : 0,
           totalClientesAtendidos: resultadosClientes[index]?.clientes || 0,
           totalEmpresasAtendidas: resultadosClientes[index]?.empresa || 0,
           ventasTransferencias: montoCambiado[index]?.ventaUSD
@@ -2920,7 +3438,10 @@ export async function obtenerTotalTablaAño(req: Request, res: Response): Promis
   }
 }
 
-export async function exportarExcelTablaAño(req: Request, res: Response): Promise<void> {
+export async function exportarExcelTablaAño(
+  req: Request,
+  res: Response
+): Promise<void> {
   try {
     const meses = [
       "Enero",
@@ -2955,7 +3476,8 @@ export async function exportarExcelTablaAño(req: Request, res: Response): Promi
           index !== 0
             ? `${
                 Math.round(
-                  (montoCambiado[index]?.operacionesMes / montoCambiado[index - 1]?.operacionesMes -
+                  (montoCambiado[index]?.operacionesMes /
+                    montoCambiado[index - 1]?.operacionesMes -
                     1) *
                     100
                 ) || ""
@@ -2965,13 +3487,17 @@ export async function exportarExcelTablaAño(req: Request, res: Response): Promi
           index !== 0
             ? `${
                 Math.round(
-                  (montoCambiado[index]?.operacionesMes / montoCambiado[0]?.operacionesMes - 1) *
+                  (montoCambiado[index]?.operacionesMes /
+                    montoCambiado[0]?.operacionesMes -
+                    1) *
                     100
                 ) || ""
               } %`
             : "",
         "Montos ($000)": formatearNumeroDecimal(
-          montoCambiado[index]?.dolares ? montoCambiado[index]?.dolares / 1000 : 0
+          montoCambiado[index]?.dolares
+            ? montoCambiado[index]?.dolares / 1000
+            : 0
         ),
         "+/- % ":
           index !== 0
@@ -2989,14 +3515,19 @@ export async function exportarExcelTablaAño(req: Request, res: Response): Promi
           index !== 0
             ? `${
                 Math.round(
-                  (montoCambiado[index]?.dolares / 1000 / (montoCambiado[0]?.dolares / 1000) - 1) *
+                  (montoCambiado[index]?.dolares /
+                    1000 /
+                    (montoCambiado[0]?.dolares / 1000) -
+                    1) *
                     100
                 ) || ""
               } %`
             : "",
         "Tick. Prom.":
           formatearNumeroDecimal(
-            montoCambiado[index]?.dolares / 1000 / montoCambiado[index]?.operacionesMes
+            montoCambiado[index]?.dolares /
+              1000 /
+              montoCambiado[index]?.operacionesMes
           ) || "",
         "Compras Transferencias": montoCambiado[index]?.compraUSD
           ? formatearNumeroDecimal(montoCambiado[index]?.compraUSD / 1000)
@@ -3042,7 +3573,10 @@ export async function exportarExcelTablaAño(req: Request, res: Response): Promi
 
     const buffer = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
 
-    res.setHeader("Content-Disposition", `attachment; filename=totales_${anio}.xlsx`);
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=totales_${anio}.xlsx`
+    );
     res.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -3053,3 +3587,280 @@ export async function exportarExcelTablaAño(req: Request, res: Response): Promi
     res.status(500).json({ error: "Error al exportar el Excel" });
   }
 }
+
+export const corregirTodosLosRegistros = async (req: any, res: any) => {
+  try {
+    console.log("🔄 Iniciando corrección masiva de registros...");
+    console.log("   📌 TC: 4 decimales de precisión");
+    console.log("   📌 Montos: precisión completa (10 decimales)");
+
+    // Obtener TODAS las operaciones ordenadas por número
+    const todasLasOperaciones = await prisma.operacion.findMany({
+      orderBy: { numero: "asc" },
+      include: {
+        tipoCambio: true,
+        flujoFondos: true,
+        movimiento: true,
+        saldoFinal: true,
+        resultado: true,
+        rendimiento: true,
+      },
+    });
+
+    console.log(
+      `📊 Total de operaciones a corregir: ${todasLasOperaciones.length}`
+    );
+
+    // Variables acumuladas
+    let saldoAcumuladoUSD = 0;
+    let saldoAcumuladoPEN = 0;
+    let resultadoSimpleAnterior = 0;
+    let resultadoEstrictoAnterior = 0;
+    let resultadoPotencialAnterior = 0;
+
+    let registrosCorregidos = 0;
+    let registrosConCambios = 0;
+    let cambiosTipoCambio = 0;
+    let cambiosFlujoFondos = 0;
+
+    for (const op of todasLasOperaciones) {
+      const dolares = limpiarPrecision(op.dolares);
+      const tipo = op.tipo;
+
+      // 🔥 TC con 4 decimales de precisión
+      const tcCompraOriginal = op.tipoCambio?.compra ?? 0;
+      const tcVentaOriginal = op.tipoCambio?.venta ?? 0;
+
+      const tcCompra = parseFloat(Number(tcCompraOriginal).toFixed(4));
+      const tcVenta = parseFloat(Number(tcVentaOriginal).toFixed(4));
+      const tcSpread = parseFloat((tcVenta - tcCompra).toFixed(4));
+      const tcPromedio = parseFloat(((tcVenta + tcCompra) / 2).toFixed(4));
+
+      // Verificar si TC necesita corrección
+      const tcCompraActual = parseFloat(
+        Number(op.tipoCambio?.compra ?? 0).toFixed(4)
+      );
+      const tcVentaActual = parseFloat(
+        Number(op.tipoCambio?.venta ?? 0).toFixed(4)
+      );
+      const tcSpreadActual = parseFloat(
+        Number(op.tipoCambio?.spread ?? 0).toFixed(4)
+      );
+      const tcPromedioActual = parseFloat(
+        Number(op.tipoCambio?.promedio ?? 0).toFixed(4)
+      );
+
+      const hayDiferenciaTC =
+        Math.abs(tcCompra - tcCompraActual) > 0.00001 ||
+        Math.abs(tcVenta - tcVentaActual) > 0.00001 ||
+        Math.abs(tcSpread - tcSpreadActual) > 0.00001 ||
+        Math.abs(tcPromedio - tcPromedioActual) > 0.00001;
+
+      if (hayDiferenciaTC) {
+        cambiosTipoCambio++;
+        console.log(`  ⚠️ OP-${op.numero}: TC necesita corrección`);
+        console.log(`     Compra: ${tcCompraActual} → ${tcCompra}`);
+        console.log(`     Venta: ${tcVentaActual} → ${tcVenta}`);
+      }
+
+      // Actualizar Tipo de Cambio con 4 decimales
+      if (op.tipoCambio?.id) {
+        await prisma.tipoCambioOperacion.update({
+          where: { id: op.tipoCambio.id },
+          data: {
+            compra: tcCompra,
+            venta: tcVenta,
+            spread: tcSpread,
+            promedio: tcPromedio,
+          },
+        });
+      }
+
+      // 🔥 RECALCULAR FLUJO DE FONDOS CORRECTAMENTE
+      // Si tipo es COMPRA: montoUSD = dolares, montoPEN = -(dolares * tcCompra)
+      // Si tipo es VENTA: montoUSD = -dolares, montoPEN = dolares * tcVenta
+      const montoUSDCorrecto =
+        tipo === "COMPRA"
+          ? limpiarPrecision(dolares)
+          : limpiarPrecision(-dolares);
+
+      const montoPENCorrecto =
+        tipo === "COMPRA"
+          ? limpiarPrecision(-dolares * tcCompra)
+          : limpiarPrecision(dolares * tcVenta);
+
+      // Verificar si hay cambios en flujo de fondos
+      const montoUSDActual = limpiarPrecision(op.flujoFondos?.montoUSD ?? 0);
+      const montoPENActual = limpiarPrecision(op.flujoFondos?.montoPEN ?? 0);
+
+      const hayDiferenciaUSD =
+        Math.abs(montoUSDCorrecto - montoUSDActual) > 0.000001;
+      const hayDiferenciaPEN =
+        Math.abs(montoPENCorrecto - montoPENActual) > 0.000001;
+
+      if (hayDiferenciaUSD || hayDiferenciaPEN) {
+        cambiosFlujoFondos++;
+        console.log(
+          `  ⚠️ OP-${op.numero}: Flujo de fondos necesita corrección`
+        );
+        console.log(`     USD: ${montoUSDActual} → ${montoUSDCorrecto}`);
+        console.log(`     PEN: ${montoPENActual} → ${montoPENCorrecto}`);
+      }
+
+      // Actualizar flujo de fondos
+      if (op.flujoFondosId) {
+        await prisma.flujoFondosOperacion.update({
+          where: { id: op.flujoFondosId },
+          data: {
+            montoUSD: redondearParaBD(montoUSDCorrecto),
+            montoPEN: redondearParaBD(montoPENCorrecto),
+          },
+        });
+      }
+
+      // Actualizar movimiento de fondos
+      const movimientoCompraUSD = tipo === "COMPRA" ? dolares : 0;
+      const movimientoVentaUSD = tipo === "VENTA" ? dolares : 0;
+
+      if (op.movimientoId) {
+        await prisma.movimientoFondosOperacion.update({
+          where: { id: op.movimientoId },
+          data: {
+            compraUSD: redondearParaBD(movimientoCompraUSD),
+            ventaUSD: redondearParaBD(movimientoVentaUSD),
+          },
+        });
+      }
+
+      // Recalcular saldos acumulados
+      saldoAcumuladoUSD = limpiarPrecision(
+        saldoAcumuladoUSD + montoUSDCorrecto
+      );
+      saldoAcumuladoPEN = limpiarPrecision(
+        saldoAcumuladoPEN + montoPENCorrecto
+      );
+
+      // Actualizar saldo final
+      if (op.saldoFinalId) {
+        await prisma.saldoFinalOperacion.update({
+          where: { id: op.saldoFinalId },
+          data: {
+            montoUSD: redondearParaBD(saldoAcumuladoUSD),
+            montoPEN: redondearParaBD(saldoAcumuladoPEN),
+          },
+        });
+      }
+
+      // Recalcular resultados usando TC con 4 decimales
+      const resultadoSimple = limpiarPrecision(
+        calcularUSD(
+          "promedio",
+          tcPromedio,
+          tcCompra,
+          tcVenta,
+          saldoAcumuladoUSD
+        ) + saldoAcumuladoPEN
+      );
+
+      const resultadoEstricto = limpiarPrecision(
+        calcularUSD(
+          "estricto",
+          tcPromedio,
+          tcCompra,
+          tcVenta,
+          saldoAcumuladoUSD
+        ) + saldoAcumuladoPEN
+      );
+
+      const resultadoPotencial = limpiarPrecision(
+        calcularUSD(
+          "potencial",
+          tcPromedio,
+          tcCompra,
+          tcVenta,
+          saldoAcumuladoUSD
+        ) + saldoAcumuladoPEN
+      );
+
+      // Actualizar resultado
+      if (op.resultadoId) {
+        await prisma.resultadoOperacion.update({
+          where: { id: op.resultadoId },
+          data: {
+            simple: redondearParaBD(resultadoSimple),
+            estricto: redondearParaBD(resultadoEstricto),
+            potencial: redondearParaBD(resultadoPotencial),
+          },
+        });
+      }
+
+      // Recalcular rendimientos
+      const rendimientoForzado = limpiarPrecision(
+        resultadoEstricto - resultadoEstrictoAnterior
+      );
+      const rendimientoMedio = limpiarPrecision(
+        resultadoSimple - resultadoSimpleAnterior
+      );
+      const rendimientoEsperado = limpiarPrecision(
+        resultadoPotencial - resultadoPotencialAnterior
+      );
+
+      // Actualizar rendimiento
+      if (op.rendimientoId) {
+        await prisma.rendimientoOperacion.update({
+          where: { id: op.rendimientoId },
+          data: {
+            forzado: redondearParaBD(rendimientoForzado),
+            medio: redondearParaBD(rendimientoMedio),
+            esperado: redondearParaBD(rendimientoEsperado),
+          },
+        });
+      }
+
+      // Actualizar valores anteriores para el siguiente registro
+      resultadoSimpleAnterior = resultadoSimple;
+      resultadoEstrictoAnterior = resultadoEstricto;
+      resultadoPotencialAnterior = resultadoPotencial;
+
+      registrosCorregidos++;
+
+      if (hayDiferenciaTC || hayDiferenciaUSD || hayDiferenciaPEN) {
+        registrosConCambios++;
+      }
+
+      // Log cada 100 registros
+      if (registrosCorregidos % 100 === 0) {
+        console.log(
+          `  ✅ Procesados ${registrosCorregidos}/${todasLasOperaciones.length}`
+        );
+      }
+    }
+
+    console.log(`\n✅ Corrección completada!`);
+    console.log(`   📊 Total procesados: ${registrosCorregidos}`);
+    console.log(`   🔧 Registros con cambios: ${registrosConCambios}`);
+    console.log(`   💱 TC corregidos: ${cambiosTipoCambio}`);
+    console.log(`   💰 Flujos corregidos: ${cambiosFlujoFondos}`);
+
+    res.status(200).json({
+      message: "Corrección masiva completada exitosamente",
+      totalProcesados: registrosCorregidos,
+      registrosConCambios: registrosConCambios,
+      cambiosTipoCambio: cambiosTipoCambio,
+      cambiosFlujoFondos: cambiosFlujoFondos,
+      detalles: {
+        tcPrecision: "4 decimales",
+        montosPrecision: "10 decimales",
+        visualizacion: "TC: 3 decimales, Montos: 2 decimales",
+      },
+    });
+  } catch (error) {
+    console.error("❌ Error en corrección masiva:", error);
+    res.status(500).json({
+      error: "Error al corregir registros",
+      detalles: error instanceof Error ? error.message : "Error desconocido",
+    });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
