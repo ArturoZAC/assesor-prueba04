@@ -1,4 +1,5 @@
 import {
+    corregirTodosLosRegistros,
   editarOperacion,
   eliminarOperacionDolares,
   eliminarOperacionSoles,
@@ -104,7 +105,7 @@ también se estará eliminando en 3 días la otra web que estaba de prueba, grac
  */
 
 router.get("/exportarTablaOperaciones/:tipo", exportarOperacionesExcel);
-
+router.post('/corregir-todos', corregirTodosLosRegistros);
 router.get("/grafico-generacion-caja", obtenerGraficaGeneracionCaja);
 router.get("/grafico-montos-cambiados", sacarGraficaMontosCambiados);
 router.get("/grafico-cantidad-clientes-atendidos", sacarGraficaClientesAtendidos);
